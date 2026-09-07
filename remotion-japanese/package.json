@@ -1,0 +1,15 @@
+{
+  "name": "create-foto-remotion-japanese",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src/index.jsx",
+    "render": "remotion render src/index.jsx JapaneseScene out/japanese-scene.mp4 --codec=h264 --crf=20 --pixel-format=yuv420p"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.522",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.522"
+  }
+}
