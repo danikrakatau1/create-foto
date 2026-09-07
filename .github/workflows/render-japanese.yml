@@ -1,6 +1,12 @@
 name: Render Japanese Scene MP4
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "remotion-japanese/**"
+      - ".github/workflows/render-japanese.yml"
   workflow_dispatch:
 
 permissions:
@@ -20,7 +26,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Download artwork assets from Adobe Creative Cloud
+      - name: Download corrected artwork assets from Adobe Creative Cloud
         shell: bash
         run: |
           set -euo pipefail
@@ -34,17 +40,21 @@ jobs:
             test -s "remotion-japanese/public/assets/${target}"
           }
 
-          fetch_asset "https://at.adobe.com/2HmjMPGXw56uCNNT" "background-main.jpg"
-          fetch_asset "https://at.adobe.com/R1w6nYGHDsg8jAjb" "fuji-main.png"
-          fetch_asset "https://at.adobe.com/DSz41wrGVsC6PNsT" "pagoda-main.png"
-          fetch_asset "https://at.adobe.com/q0rYmwFzatNzI0aI" "pine-left.png"
-          fetch_asset "https://at.adobe.com/HZxyAMDaxIkp0Num" "pine-right.png"
-          fetch_asset "https://at.adobe.com/T0NjVAHooxtAd9es" "cloud-01.png"
-          fetch_asset "https://at.adobe.com/Rvn9p8PpSQFNjfdC" "cloud-02.png"
-          fetch_asset "https://at.adobe.com/9Or8H7T5OUvPfOnd" "sakura-top-left.png"
-          fetch_asset "https://at.adobe.com/8LJFgpqwTx3LqSfZ" "sakura-top-right.png"
+          fetch_asset "https://at.adobe.com/rBByVjy7H6u3EObB" "background-main.jpg"
+          fetch_asset "https://at.adobe.com/wCqufCmJrtBeUvFA" "fuji-main.png"
+
+          fetch_asset "https://at.adobe.com/WOGZZgNn5VJyrjja" "pine-left.png"
+          fetch_asset "https://at.adobe.com/HwbfQ8UXXqW2f6iW" "pine-right.png"
+          fetch_asset "https://at.adobe.com/SKqugUSrdur0h7fM" "pine-center.png"
+
+          fetch_asset "https://at.adobe.com/ZrUJg0xRr4rfjsLt" "cloud-01.png"
+          fetch_asset "https://at.adobe.com/ANmK9B6UYKpXc4CJ" "cloud-02.png"
+
+          fetch_asset "https://at.adobe.com/thck3O41j59sSbCP" "sakura-top-left.png"
+          fetch_asset "https://at.adobe.com/KptmDxaNGX2dXTiN" "sakura-top-right.png"
           fetch_asset "https://at.adobe.com/cUpUpeZedlABpf5H" "sakura-side-right.png"
-          fetch_asset "https://at.adobe.com/b6vUMCGNnAmwlCI1" "peony-left.png"
+
+          fetch_asset "https://at.adobe.com/3Uh45cSUSyxQzXpH" "peony-left.png"
           fetch_asset "https://at.adobe.com/SNDRUuzTGtdtSbjs" "peony-center.png"
           fetch_asset "https://at.adobe.com/7qECzt0ien2m3F4i" "peony-right.png"
 
