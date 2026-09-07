@@ -1,3 +1,4 @@
+// render-trigger: 2026-09-08 02:07 WIB
 export const sceneConfig = {
   durationSeconds: 20,
   layers: [
