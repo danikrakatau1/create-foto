@@ -15,42 +15,49 @@ const clamp = {
   extrapolateRight: 'clamp',
 };
 
+const easeOutCubic = (p) => 1 - Math.pow(1 - p, 3);
+
+// MOTION LOCK V1.3 — choreography matched to the supplied reference:
+// scene builds in visible stages, then the central ivory panel grows in and its border draws.
+// After each entrance the artwork becomes almost static; no full flowers/branches fly across frame.
+const referenceChoreography = {
+  fuji: {start: 0.45, x: 0, y: 44, scale: 0.945, duration: 42},
+  cloud1: {start: 0.95, x: -54, y: 8, scale: 0.97, duration: 38},
+  cloud2: {start: 1.15, x: 54, y: 8, scale: 0.97, duration: 38},
+  pagoda: {start: 1.45, x: 0, y: 126, scale: 0.90, duration: 44},
+  pineLeft: {start: 2.45, x: -105, y: 20, scale: 0.95, duration: 44},
+  pineRight: {start: 2.75, x: 105, y: 20, scale: 0.95, duration: 44},
+  peonyLeft: {start: 3.05, x: -28, y: 92, scale: 0.92, duration: 40},
+  peonyCenter: {start: 3.25, x: 0, y: 98, scale: 0.92, duration: 40},
+  peonyRight: {start: 3.45, x: 28, y: 92, scale: 0.92, duration: 40},
+  sakuraTopLeft: {start: 3.90, x: -118, y: -62, scale: 0.93, duration: 46},
+  sakuraTopRight: {start: 4.20, x: 118, y: -62, scale: 0.93, duration: 46},
+  sakuraSideRight: {start: 4.55, x: 92, y: 8, scale: 0.95, duration: 42},
+};
+
 const motionFor = (motion, t) => {
   switch (motion) {
     case 'fuji-still':
-      return {x: 0, y: -0.25 * Math.sin(t * 0.20), rotation: 0, scale: 1};
     case 'structure-still':
       return {x: 0, y: 0, rotation: 0, scale: 1};
     case 'cloud-right-soft':
-      return {
-        x: 6 * Math.sin(t * 0.36),
-        y: 1.0 * Math.sin(t * 0.22),
-        rotation: 0,
-        scale: 1,
-      };
+      return {x: 3.2 * Math.sin(t * 0.30), y: 0.55 * Math.sin(t * 0.20), rotation: 0, scale: 1};
     case 'cloud-left-soft':
-      return {
-        x: -5 * Math.sin(t * 0.34),
-        y: 0.9 * Math.sin(t * 0.21),
-        rotation: 0,
-        scale: 1,
-      };
+      return {x: -3.0 * Math.sin(t * 0.29), y: 0.50 * Math.sin(t * 0.19), rotation: 0, scale: 1};
     case 'micro-sway-left':
-      return {x: 0, y: 0, rotation: 0.07 * Math.sin(t * 0.38), scale: 1};
+      return {x: 0, y: 0, rotation: 0.035 * Math.sin(t * 0.32), scale: 1};
     case 'micro-sway-right':
-      return {x: 0, y: 0, rotation: -0.07 * Math.sin(t * 0.37), scale: 1};
+      return {x: 0, y: 0, rotation: -0.035 * Math.sin(t * 0.31), scale: 1};
     case 'sakura-left-soft':
-      return {x: 0, y: 0, rotation: 0.20 * Math.sin(t * 0.42), scale: 1};
+      return {x: 0, y: 0, rotation: 0.10 * Math.sin(t * 0.34), scale: 1};
     case 'sakura-right-soft':
-      return {x: 0, y: 0, rotation: -0.18 * Math.sin(t * 0.40), scale: 1};
+      return {x: 0, y: 0, rotation: -0.09 * Math.sin(t * 0.33), scale: 1};
     case 'side-sway-soft':
-      return {x: 0, y: 0, rotation: 0.12 * Math.sin(t * 0.38), scale: 1};
+      return {x: 0, y: 0, rotation: 0.07 * Math.sin(t * 0.31), scale: 1};
     case 'flower-anchor-a':
-      return {x: 0, y: -0.35 * Math.sin(t * 0.30), rotation: 0.02 * Math.sin(t * 0.28), scale: 1};
     case 'flower-anchor-b':
-      return {x: 0, y: -0.25 * Math.sin(t * 0.28), rotation: -0.015 * Math.sin(t * 0.26), scale: 1};
     case 'flower-anchor-c':
-      return {x: 0, y: -0.32 * Math.sin(t * 0.29), rotation: -0.02 * Math.sin(t * 0.27), scale: 1};
+      return {x: 0, y: 0, rotation: 0, scale: 1};
     default:
       return {x: 0, y: 0, rotation: 0, scale: 1};
   }
@@ -59,29 +66,11 @@ const motionFor = (motion, t) => {
 const ArtworkLayer = ({layer}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const startFrame = Math.round(layer.start * fps);
-  const localFrame = Math.max(0, frame - startFrame);
-
-  const reveal = spring({
-    frame: localFrame,
-    fps,
-    config: {damping: 40, stiffness: 64, mass: 1.12},
-    durationInFrames: 30,
-  });
-
-  const opacity = interpolate(localFrame, [0, 18], [0, 1], clamp);
-  const enterX = (layer.enterX || 0) * (1 - reveal);
-  const enterY = (layer.enterY || 0) * (1 - reveal);
-  const enterScale = 0.985 + reveal * 0.015;
-  const t = localFrame / fps;
-  const living = motionFor(layer.motion, t);
-  const flipX = layer.flipX ? -1 : 1;
-  const staticRotation = layer.rotation || 0;
-  const totalRotation = staticRotation + living.rotation;
 
   if (layer.kind === 'background') {
-    const p = interpolate(frame, [0, sceneConfig.durationSeconds * fps - 1], [0, 1], clamp);
-    const backgroundScale = 1.004 + p * 0.002;
+    const cameraBuild = easeOutCubic(interpolate(frame, [0, 5.8 * fps], [0, 1], clamp));
+    const scale = interpolate(cameraBuild, [0, 1], [1.028, 1.004], clamp);
+    const y = interpolate(cameraBuild, [0, 1], [18, 0], clamp);
     return (
       <Img
         src={staticFile(`assets/${layer.file}`)}
@@ -92,12 +81,38 @@ const ArtworkLayer = ({layer}) => {
           height: '100%',
           objectFit: 'cover',
           zIndex: layer.z,
-          transform: `scale(${backgroundScale})`,
+          transform: `translateY(${y}px) scale(${scale})`,
           transformOrigin: '50% 50%',
         }}
       />
     );
   }
+
+  const cue = referenceChoreography[layer.id] || {
+    start: layer.start || 0,
+    x: layer.enterX || 0,
+    y: layer.enterY || 0,
+    scale: 0.97,
+    duration: 38,
+  };
+  const startFrame = Math.round(cue.start * fps);
+  const localFrame = Math.max(0, frame - startFrame);
+
+  const reveal = spring({
+    frame: localFrame,
+    fps,
+    config: {damping: 24, stiffness: 55, mass: 1.05},
+    durationInFrames: cue.duration,
+  });
+  const opacity = interpolate(localFrame, [0, Math.min(28, cue.duration * 0.65)], [0, 1], clamp);
+  const enterX = cue.x * (1 - reveal);
+  const enterY = cue.y * (1 - reveal);
+  const enterScale = cue.scale + reveal * (1 - cue.scale);
+  const t = localFrame / fps;
+  const living = motionFor(layer.motion, t);
+  const flipX = layer.flipX ? -1 : 1;
+  const staticRotation = layer.rotation || 0;
+  const totalRotation = staticRotation + living.rotation;
 
   return (
     <div
@@ -120,72 +135,70 @@ const ArtworkLayer = ({layer}) => {
   );
 };
 
-// Only tiny procedural petals are allowed to cross the frame.
-// Full blossom/branch assets stay anchored in the composition.
-const petalSeeds = [
-  {x: 150, start: 1.4, duration: 6.0, size: 12, sway: 18, tilt: -12},
-  {x: 320, start: 2.0, duration: 6.4, size: 14, sway: 22, tilt: 16},
-  {x: 500, start: 0.9, duration: 6.8, size: 11, sway: 20, tilt: -18},
-  {x: 690, start: 2.7, duration: 6.1, size: 13, sway: 24, tilt: 10},
-  {x: 860, start: 1.8, duration: 6.5, size: 12, sway: 19, tilt: -14},
-  {x: 990, start: 3.3, duration: 5.9, size: 10, sway: 16, tilt: 18},
-];
-
-const PetalField = () => {
+const InvitationPanel = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
+  const start = 6.05 * fps;
+  const growRaw = interpolate(frame, [start, start + 44], [0, 1], clamp);
+  const grow = easeOutCubic(growRaw);
+  const opacity = interpolate(frame, [start, start + 18], [0, 0.94], clamp);
+  const borderP = interpolate(frame, [7.10 * fps, 8.55 * fps], [0, 1], clamp);
+
+  if (frame < start) return null;
+
+  const scaleX = interpolate(grow, [0, 1], [0.68, 1], clamp);
+  const scaleY = interpolate(grow, [0, 1], [0.18, 1], clamp);
+
+  const path = 'M120 24 Q380 -8 640 24 Q704 34 726 94 L726 150 L758 150 L758 1128 L726 1128 L726 1184 Q380 1322 34 1184 L34 1128 L2 1128 L2 150 L34 150 L34 94 Q56 34 120 24 Z';
+
   return (
-    <AbsoluteFill style={{zIndex: 29, pointerEvents: 'none'}}>
-      {petalSeeds.slice(0, sceneConfig.motionLock.petalCount).map((petal, index) => {
-        const start = petal.start * fps;
-        const end = (petal.start + petal.duration) * fps;
-        const p = interpolate(frame, [start, end], [0, 1], clamp);
-        const opacity = interpolate(p, [0, 0.10, 0.88, 1], [0, 0.38, 0.30, 0], clamp);
-        if (opacity <= 0.001) return null;
-
-        const y = interpolate(p, [0, 1], [-45, 1960], clamp);
-        const x = petal.x + Math.sin(p * Math.PI * 1.7 + index * 0.71) * petal.sway;
-        const rotation = petal.tilt + p * (index % 2 === 0 ? 95 : -85);
-        const squash = 0.82 + 0.08 * Math.sin(p * Math.PI * 3 + index);
-
-        return (
-          <div
-            key={`${petal.x}-${petal.start}`}
-            style={{
-              position: 'absolute',
-              left: x,
-              top: y,
-              width: petal.size,
-              height: petal.size * 1.45,
-              borderRadius: '70% 20% 70% 30%',
-              background: 'linear-gradient(145deg, rgba(255,214,221,0.88), rgba(229,133,151,0.80))',
-              boxShadow: '0 1px 2px rgba(126,61,76,0.10)',
-              opacity,
-              transform: `translate(-50%, -50%) rotate(${rotation}deg) scaleX(${squash})`,
-              filter: index % 4 === 0 ? 'blur(0.35px)' : 'none',
-            }}
-          />
-        );
-      })}
-    </AbsoluteFill>
+    <div
+      style={{
+        position: 'absolute',
+        left: 540,
+        top: 1015,
+        width: 760,
+        height: 1325,
+        zIndex: 7,
+        opacity,
+        transform: `translate(-50%, -50%) scaleX(${scaleX}) scaleY(${scaleY})`,
+        transformOrigin: '50% 50%',
+        pointerEvents: 'none',
+      }}
+    >
+      <svg viewBox="0 0 760 1325" width="100%" height="100%" style={{display: 'block', overflow: 'visible'}}>
+        <path d={path} fill="rgba(248,244,233,0.91)" stroke="none" />
+        <path
+          d={path}
+          fill="none"
+          stroke="rgba(112,30,38,0.96)"
+          strokeWidth="3"
+          vectorEffect="non-scaling-stroke"
+          pathLength="1"
+          strokeDasharray="1"
+          strokeDashoffset={1 - borderP}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </div>
   );
 };
 
 export const JapaneseScene = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const total = sceneConfig.durationSeconds * fps;
-  const cameraP = interpolate(frame, [0, total - 1], [0, 1], clamp);
-  const cameraScale = 1 + cameraP * sceneConfig.motionLock.cameraPush;
-  const cameraX = interpolate(cameraP, [0, 1], [0, sceneConfig.motionLock.cameraX]);
-  const cameraY = interpolate(cameraP, [0, 1], [0, sceneConfig.motionLock.cameraY]);
+
+  const build = easeOutCubic(interpolate(frame, [0, 5.8 * fps], [0, 1], clamp));
+  const cameraScale = interpolate(build, [0, 1], [1.024, 1], clamp);
+  const cameraY = interpolate(build, [0, 1], [14, 0], clamp);
 
   return (
     <AbsoluteFill style={{backgroundColor: '#f4f0e7', overflow: 'hidden'}}>
       <AbsoluteFill
         style={{
-          transform: `translate(${cameraX}px, ${cameraY}px) scale(${cameraScale})`,
+          transform: `translateY(${cameraY}px) scale(${cameraScale})`,
           transformOrigin: '50% 50%',
         }}
       >
@@ -194,13 +207,13 @@ export const JapaneseScene = () => {
         ))}
       </AbsoluteFill>
 
-      <PetalField />
+      <InvitationPanel />
 
       <AbsoluteFill
         style={{
           pointerEvents: 'none',
           background:
-            'radial-gradient(circle at 50% 44%, rgba(255,255,255,0) 64%, rgba(62,45,34,0.06) 100%), linear-gradient(180deg, rgba(255,250,242,0.018), rgba(82,54,36,0.010))',
+            'radial-gradient(circle at 50% 44%, rgba(255,255,255,0) 64%, rgba(62,45,34,0.055) 100%), linear-gradient(180deg, rgba(255,250,242,0.014), rgba(82,54,36,0.008))',
           zIndex: 50,
         }}
       />
