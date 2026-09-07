@@ -44,7 +44,7 @@ jobs:
           # Main locked artwork stack (Adobe Creative Cloud)
           fetch_asset "https://at.adobe.com/rBByVjy7H6u3EObB" "background-main.jpg"
           fetch_asset "https://at.adobe.com/gojP2pybWaZjHYjd" "fuji-main.png"
-          fetch_asset "https://at.adobe.com/DSz41wrGVsC6PNsT" "pagoda-main.png"
+          fetch_asset "https://at.adobe.com/1ssrMIyaMo46g1BY" "pagoda-main.png"
 
           fetch_asset "https://at.adobe.com/WOGZZgNn5VJyrjja" "pine-left.png"
           fetch_asset "https://at.adobe.com/HwbfQ8UXXqW2f6iW" "pine-right.png"
