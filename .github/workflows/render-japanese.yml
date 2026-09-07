@@ -1,8 +1,12 @@
 name: Render Japanese Scene MP4
 
-# Auto-render is intentionally paused while composition is being locked.
-# Re-enable the push trigger only when the user explicitly asks to render.
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "remotion-japanese/**"
+      - ".github/workflows/render-japanese.yml"
   workflow_dispatch:
 
 permissions:
@@ -22,7 +26,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Download corrected artwork assets from Adobe Creative Cloud
+      - name: Download locked artwork assets from Adobe Creative Cloud
         shell: bash
         run: |
           set -euo pipefail
@@ -38,10 +42,10 @@ jobs:
 
           fetch_asset "https://at.adobe.com/rBByVjy7H6u3EObB" "background-main.jpg"
           fetch_asset "https://at.adobe.com/gojP2pybWaZjHYjd" "fuji-main.png"
+          fetch_asset "https://at.adobe.com/DSz41wrGVsC6PNsT" "pagoda-main.png"
 
           fetch_asset "https://at.adobe.com/WOGZZgNn5VJyrjja" "pine-left.png"
           fetch_asset "https://at.adobe.com/HwbfQ8UXXqW2f6iW" "pine-right.png"
-          fetch_asset "https://at.adobe.com/SKqugUSrdur0h7fM" "pine-center.png"
 
           fetch_asset "https://at.adobe.com/ZrUJg0xRr4rfjsLt" "cloud-01.png"
           fetch_asset "https://at.adobe.com/ANmK9B6UYKpXc4CJ" "cloud-02.png"
