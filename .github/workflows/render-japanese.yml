@@ -41,25 +41,24 @@ jobs:
             test -s "remotion-japanese/public/assets/${target}"
           }
 
-          # Main locked artwork stack (Adobe Creative Cloud)
-          fetch_asset "https://at.adobe.com/vvScYzJH2gWOTBgB" "background-main.jpg"
-          fetch_asset "https://at.adobe.com/gojP2pybWaZjHYjd" "fuji-main.png"
-          fetch_asset "https://at.adobe.com/1ssrMIyaMo46g1BY" "pagoda-main.png"
+          # Main locked artwork stack — refreshed Creative Cloud rendition links.
+          fetch_asset "https://at.adobe.com/iVDaBEqyVgO83Bel" "background-main.jpg"
+          fetch_asset "https://at.adobe.com/EK2wvO3PImPfqvSa" "fuji-main.png"
+          fetch_asset "https://at.adobe.com/jG1LieHZ0AHwgIvz" "pagoda-main.png"
 
-          fetch_asset "https://at.adobe.com/WOGZZgNn5VJyrjja" "pine-left.png"
-          fetch_asset "https://at.adobe.com/HwbfQ8UXXqW2f6iW" "pine-right.png"
+          fetch_asset "https://at.adobe.com/9hFLr0AqSUkt1BNq" "pine-left.png"
+          fetch_asset "https://at.adobe.com/lyEMWZQPtevIOyoN" "pine-right.png"
 
-          fetch_asset "https://at.adobe.com/ZrUJg0xRr4rfjsLt" "cloud-01.png"
-          fetch_asset "https://at.adobe.com/ANmK9B6UYKpXc4CJ" "cloud-02.png"
+          fetch_asset "https://at.adobe.com/wMOzScAp3vfby82C" "cloud-01.png"
+          fetch_asset "https://at.adobe.com/jmjJ0pew3BPyNlwZ" "cloud-02.png"
 
-          # Refreshed Creative Cloud rendition links for floral assets.
-          fetch_asset "https://at.adobe.com/UFKIokf3PF4kL8AV" "sakura-top-left.png"
-          fetch_asset "https://at.adobe.com/hvmMRhFwc09o99EH" "sakura-top-right.png"
-          fetch_asset "https://at.adobe.com/DR6njhOVKpNCe9oV" "sakura-side-right.png"
+          fetch_asset "https://at.adobe.com/t99rVOr4K10kXVqu" "sakura-top-left.png"
+          fetch_asset "https://at.adobe.com/7dMEw0HzgVyZJaSs" "sakura-top-right.png"
+          fetch_asset "https://at.adobe.com/iiZ2ixDACDdO1vLd" "sakura-side-right.png"
 
-          fetch_asset "https://at.adobe.com/uOwEbkQoYgKihhvF" "peony-left.png"
-          fetch_asset "https://at.adobe.com/cgPV90Z6X4dASK2K" "peony-center.png"
-          fetch_asset "https://at.adobe.com/xEomsgxcej5R90nK" "peony-right.png"
+          fetch_asset "https://at.adobe.com/Z5Stc1JviQwoXVch" "peony-left.png"
+          fetch_asset "https://at.adobe.com/LHUlR8zcAWK1vbkG" "peony-center.png"
+          fetch_asset "https://at.adobe.com/lRtiJlFw6xIm2XIa" "peony-right.png"
 
           # Extra transparent reference pool — Wikimedia Commons, CC0.
           fetch_asset "https://upload.wikimedia.org/wikipedia/commons/8/87/Sakura.svg" "sakura-cc0.svg"
