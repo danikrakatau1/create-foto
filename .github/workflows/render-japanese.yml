@@ -25,8 +25,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: remotion-japanese/package-lock.json
 
       - name: Download artwork assets from Adobe Creative Cloud
         shell: bash
