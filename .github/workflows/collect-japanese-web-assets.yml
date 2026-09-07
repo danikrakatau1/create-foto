@@ -35,88 +35,109 @@ jobs:
             test -s "$OUT/$target"
           }
 
-          # Sakura / floral — transparent SVG
+          # Existing transparent sakura / floral references
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_sakura_cherry_blossom_branch.svg" "sakura-branch.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_sakura_cherry_blossom_branch_monochrome.svg" "sakura-branch-monochrome.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Sakura.svg" "sakura-flower-cc0.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Sakura_blossom.svg" "sakura-blossom.svg"
 
-          # Clouds / architecture — transparent SVG
+          # Existing clouds / architecture references
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cloud_svg.svg" "cloud-reference.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/SymbolPagoda.svg" "pagoda-symbol.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Pagoda.svg" "pagoda-gorinto-public-domain.svg"
 
-          # Japanese ornament / foreground alternatives
+          # Existing Japanese ornament alternatives
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Japanese_geometric_wave_pattern.svg" "japanese-wave-pattern.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_Japanese_wave_illustration.svg" "japanese-wave-illustration.svg"
+
+          # LIFE MOTION CANDIDATES — CC0 / public-domain friendly
+          # Petals / blossom details
+          fetch "https://www.svgrepo.com/download/481054/cherry-blossom-petal.svg" "life-cherry-blossom-petal-cc0.svg"
+          fetch "https://www.svgrepo.com/download/14462/cherry-blossom.svg" "life-cherry-blossom-cc0.svg"
+          fetch "https://www.svgrepo.com/download/134885/flower-on-a-branch.svg" "life-flower-on-branch-cc0.svg"
+
+          # Distant birds / crane silhouettes for slow background flight
+          fetch "https://www.svgrepo.com/download/191442/crane-bird.svg" "life-crane-bird-cc0.svg"
+          fetch "https://www.svgrepo.com/download/40552/bird-in-flight-origami.svg" "life-bird-in-flight-origami-cc0.svg"
+          fetch "https://www.svgrepo.com/download/25528/bird-silhouette.svg" "life-bird-silhouette-cc0.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_flying_Pinhead_icon.svg" "life-bird-flying-pinhead-cc0.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Crane_illustration.svg" "life-crane-illustration-cc0.svg"
+
+          # Mist / cloud shapes: use as masks or decorative references, not literal weather icons
+          fetch "https://www.svgrepo.com/download/455033/misty-cloud.svg" "life-misty-cloud-cc0.svg"
+          fetch "https://www.svgrepo.com/download/26906/mist-and-cloud.svg" "life-mist-and-cloud-cc0.svg"
+          fetch "https://www.svgrepo.com/download/107707/mist.svg" "life-mist-cc0.svg"
 
           cat > "$OUT/README-LICENSES.md" <<'EOF'
           # Japanese Web Reference Assets
 
           Collected as motion/reference candidates for the Japanese scene. Keep this file with the assets so attribution requirements are not lost.
 
-          ## Sakura branch
-          - File: sakura-branch.svg
-          - Source: Wikimedia Commons — Simple sakura cherry blossom branch.svg
-          - Author: Bajinra
-          - License: CC BY-SA 4.0
-          - Page: https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch.svg
+          ## Existing Wikimedia references
+          - sakura-branch.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
+            https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch.svg
+          - sakura-branch-monochrome.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
+            https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch_monochrome.svg
+          - sakura-flower-cc0.svg — Wikimedia Commons, Mnmazur, CC0 1.0
+            https://commons.wikimedia.org/wiki/File:Sakura.svg
+          - sakura-blossom.svg — Wikimedia Commons, Wanjan / vector adaptation by Rotideypoc41352, CC BY 3.0
+            https://commons.wikimedia.org/wiki/File:Sakura_blossom.svg
+          - cloud-reference.svg — Wikimedia Commons, Nevit Dilmen, CC BY-SA 3.0 / GFDL
+            https://commons.wikimedia.org/wiki/File:Cloud_svg.svg
+          - pagoda-symbol.svg — Wikimedia Commons, Stefan Fussan, CC BY-SA
+            https://commons.wikimedia.org/wiki/File:SymbolPagoda.svg
+          - pagoda-gorinto-public-domain.svg — Wikimedia Commons, Raeky / redrawn by Beao, public domain
+            https://commons.wikimedia.org/wiki/File:Pagoda.svg
+          - japanese-wave-pattern.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
+            https://commons.wikimedia.org/wiki/File:Japanese_geometric_wave_pattern.svg
+          - japanese-wave-illustration.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
+            https://commons.wikimedia.org/wiki/File:Simple_Japanese_wave_illustration.svg
 
-          ## Sakura branch monochrome
-          - File: sakura-branch-monochrome.svg
-          - Source: Wikimedia Commons — Simple sakura cherry blossom branch monochrome.svg
-          - Author: Bajinra
-          - License: CC BY-SA 4.0
-          - Page: https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch_monochrome.svg
+          ## Life-motion candidates — CC0
+          SVG Repo pages below explicitly list CC0 on each asset page.
+          - life-cherry-blossom-petal-cc0.svg
+            https://www.svgrepo.com/svg/481054/cherry-blossom-petal
+            Suggested use: 4–8 tiny petals, slow fall, low opacity.
+          - life-cherry-blossom-cc0.svg
+            https://www.svgrepo.com/svg/14462/cherry-blossom
+            Suggested use: small blossom accents, not whole-flower flying.
+          - life-flower-on-branch-cc0.svg
+            https://www.svgrepo.com/svg/134885/flower-on-a-branch
+            Suggested use: foreground parallax / very slow branch sway.
+          - life-crane-bird-cc0.svg
+            https://www.svgrepo.com/svg/191442/crane-bird
+            Suggested use: one distant crane crossing slowly behind Fuji.
+          - life-bird-in-flight-origami-cc0.svg
+            https://www.svgrepo.com/svg/40552/bird-in-flight-origami
+            Suggested use: optional stylized distant flight.
+          - life-bird-silhouette-cc0.svg
+            https://www.svgrepo.com/svg/25528/bird-silhouette
+            Suggested use: 2–3 tiny silhouettes in the far sky.
+          - life-misty-cloud-cc0.svg
+            https://www.svgrepo.com/svg/455033/misty-cloud
+            Suggested use: mask/reference for soft drifting mist.
+          - life-mist-and-cloud-cc0.svg
+            https://www.svgrepo.com/svg/26906/mist-and-cloud
+            Suggested use: mask/reference for lower-depth haze.
+          - life-mist-cc0.svg
+            https://www.svgrepo.com/svg/107707/mist
+            Suggested use: mask/reference only; actual mist is better rendered as translucent gradients.
 
-          ## Sakura flower outline
-          - File: sakura-flower-cc0.svg
-          - Source: Wikimedia Commons — Sakura.svg
-          - Author: Mnmazur
-          - License: CC0 1.0
-          - Page: https://commons.wikimedia.org/wiki/File:Sakura.svg
+          ## Wikimedia CC0 life-motion references
+          - life-bird-flying-pinhead-cc0.svg — Wikimedia Commons, CC0 1.0
+            https://commons.wikimedia.org/wiki/File:Bird_flying_Pinhead_icon.svg
+          - life-crane-illustration-cc0.svg — Wikimedia Commons, Francis Akuka / Wikimedia Foundation, CC0 1.0
+            https://commons.wikimedia.org/wiki/File:Crane_illustration.svg
 
-          ## Sakura blossom
-          - File: sakura-blossom.svg
-          - Source: Wikimedia Commons — Sakura blossom.svg
-          - Authors: Wanjan / vector adaptation by Rotideypoc41352
-          - License: CC BY 3.0
-          - Page: https://commons.wikimedia.org/wiki/File:Sakura_blossom.svg
-
-          ## Cloud reference
-          - File: cloud-reference.svg
-          - Source: Wikimedia Commons — Cloud svg.svg
-          - Author: Nevit Dilmen
-          - License: CC BY-SA 3.0 or GFDL (choose an applicable license and preserve attribution)
-          - Page: https://commons.wikimedia.org/wiki/File:Cloud_svg.svg
-
-          ## Pagoda symbol
-          - File: pagoda-symbol.svg
-          - Source: Wikimedia Commons — SymbolPagoda.svg
-          - Author: Stefan Fussan
-          - License: CC BY-SA (Commons page lists 4.0 and prior versions; preserve attribution)
-          - Page: https://commons.wikimedia.org/wiki/File:SymbolPagoda.svg
-
-          ## Gorinto pagoda diagram
-          - File: pagoda-gorinto-public-domain.svg
-          - Source: Wikimedia Commons — Pagoda.svg
-          - Author: Raeky / redrawn by Beao
-          - License: Public domain
-          - Page: https://commons.wikimedia.org/wiki/File:Pagoda.svg
-
-          ## Japanese geometric wave pattern
-          - File: japanese-wave-pattern.svg
-          - Source: Wikimedia Commons — Japanese geometric wave pattern.svg
-          - Author: Bajinra
-          - License: CC BY-SA 4.0
-          - Page: https://commons.wikimedia.org/wiki/File:Japanese_geometric_wave_pattern.svg
-
-          ## Japanese wave illustration
-          - File: japanese-wave-illustration.svg
-          - Source: Wikimedia Commons — Simple Japanese wave illustration.svg
-          - Author: Bajinra
-          - License: CC BY-SA 4.0
-          - Page: https://commons.wikimedia.org/wiki/File:Simple_Japanese_wave_illustration.svg
+          ## Motion guidance
+          To keep the scene alive but premium:
+          1. Background/Fuji/Pagoda remain nearly static.
+          2. Clouds drift 6–18 px over several seconds.
+          3. Sakura branches sway from the branch base only.
+          4. Use one foreground branch for slow parallax, never a full flower flying across frame.
+          5. Use 4–8 tiny petals total, with staggered starts and low opacity.
+          6. Add one crane or 2–3 tiny distant birds at most.
+          7. Add translucent mist as gradient layers using SVG mist shapes only as masks/references.
           EOF
 
       - name: Upload reference asset bundle
