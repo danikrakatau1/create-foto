@@ -1,14 +1,14 @@
-// JAPANESE SCENE — MOTION LOCK V1.4 FINAL CONFIG
-// Keep the approved composition. Fix the reversed sakura branch by removing horizontal mirroring.
-// Motion remains staged, calm, and nearly static after each reveal.
-// Render retry after refreshing all Creative Cloud asset sources.
+// JAPANESE SCENE — MOTION LOCK V1.2
+// Auto-render trigger: retry with refreshed pagoda + floral asset sources.
+// Fix: no full blossom/branch assets may fly across frame.
+// Motion stays in soft clouds, microscopic branch sway, subtle camera push, and a sparse petal field.
 export const sceneConfig = {
   durationSeconds: 10,
   motionLock: {
     cameraPush: 0.006,
     cameraX: -1,
     cameraY: -2,
-    petalCount: 0,
+    petalCount: 6,
   },
   layers: [
     {id: 'background', file: 'background-main.jpg', x: 540, y: 960, width: 1080, start: 0.0, z: 1, kind: 'background'},
@@ -23,8 +23,7 @@ export const sceneConfig = {
     {id: 'pineLeft', file: 'pine-left.png', x: 105, y: 1530, width: 390, start: 1.10, z: 6, enterX: -16, motion: 'micro-sway-left', origin: '24% 94%'},
     {id: 'pineRight', file: 'pine-right.png', x: 980, y: 1540, width: 360, start: 1.25, z: 6, enterX: 16, motion: 'micro-sway-right', origin: '76% 94%'},
 
-    // Sakura: use the original branch orientation. No mirror/flip on the left branch.
-    {id: 'sakuraTopLeft', file: 'sakura-top-left.png', x: 185, y: 285, width: 620, start: 1.40, z: 8, enterX: -10, enterY: -8, motion: 'sakura-left-soft', origin: '0% 0%', rotation: -2},
+    {id: 'sakuraTopLeft', file: 'sakura-top-left.png', x: 185, y: 285, width: 620, start: 1.40, z: 8, enterX: -10, enterY: -8, motion: 'sakura-left-soft', origin: '0% 0%', flipX: true, rotation: -2},
     {id: 'sakuraTopRight', file: 'sakura-top-right.png', x: 930, y: 360, width: 500, start: 1.60, z: 8, enterX: 10, enterY: -8, motion: 'sakura-right-soft', origin: '100% 0%', rotation: 1},
     {id: 'sakuraSideRight', file: 'sakura-side-right.png', x: 1030, y: 760, width: 300, start: 1.85, z: 8, enterX: 12, motion: 'side-sway-soft', origin: '100% 100%'},
 
