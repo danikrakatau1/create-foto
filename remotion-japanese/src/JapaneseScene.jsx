@@ -80,6 +80,9 @@ const ArtworkLayer = ({layer}) => {
   const enterScale = 0.965 + reveal * 0.035;
   const t = localFrame / fps;
   const living = motionFor(layer.motion, t);
+  const flipX = layer.flipX ? -1 : 1;
+  const staticRotation = layer.rotation || 0;
+  const totalRotation = staticRotation + living.rotation;
 
   if (layer.kind === 'background') {
     const p = interpolate(frame, [0, sceneConfig.durationSeconds * fps - 1], [0, 1], clamp);
@@ -111,7 +114,7 @@ const ArtworkLayer = ({layer}) => {
         opacity,
         zIndex: layer.z,
         transformOrigin: layer.origin || '50% 50%',
-        transform: `translate(-50%, -50%) translate(${enterX + living.x}px, ${enterY + living.y}px) scale(${enterScale * living.scale}) rotate(${living.rotation}deg)`,
+        transform: `translate(-50%, -50%) translate(${enterX + living.x}px, ${enterY + living.y}px) scale(${enterScale * living.scale}) rotate(${totalRotation}deg) scaleX(${flipX})`,
       }}
     >
       <Img
