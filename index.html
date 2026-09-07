@@ -4,15 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#090b10" />
-  <title>Create Foto — AI Image Lab</title>
-  <script src="https://js.puter.com/v2/"></script>
+  <title>Create Foto — Transparent Asset Processor</title>
   <style>
     :root{
       color-scheme:dark;
       --bg:#090b10;
       --panel:#11151d;
       --panel2:#151a24;
-      --line:#252c39;
+      --line:#262e3b;
       --text:#f5f7fb;
       --muted:#929cad;
       --accent:#8b7cff;
@@ -30,7 +29,7 @@
         radial-gradient(circle at 100% 0%,rgba(70,180,255,.07),transparent 30rem),
         var(--bg);
     }
-    button,input,textarea,select{font:inherit}
+    button,input{font:inherit}
     button{cursor:pointer}
     .app{width:min(1500px,100%);margin:0 auto;padding:18px;min-height:100dvh;display:flex;flex-direction:column;gap:14px}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 15px;border:1px solid var(--line);border-radius:18px;background:rgba(17,21,29,.82);backdrop-filter:blur(18px);box-shadow:0 16px 50px rgba(0,0,0,.22)}
@@ -41,44 +40,66 @@
     .status{display:inline-flex;align-items:center;gap:7px;color:#b6c0cf;font-size:12px;padding:9px 11px;border:1px solid var(--line);border-radius:999px;background:#0d1118}
     .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 14px rgba(110,231,168,.6)}
 
-    .workspace{display:grid;grid-template-columns:minmax(310px,390px) minmax(0,1fr);gap:14px;flex:1;min-height:720px}
-    .panel{border:1px solid var(--line);border-radius:var(--radius);background:rgba(17,21,29,.88);box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden}
+    .workspace{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:14px;flex:1;min-height:720px}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);background:rgba(17,21,29,.9);box-shadow:0 22px 70px rgba(0,0,0,.25);overflow:hidden;min-width:0}
     .panel-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
     .panel-title{font-size:13px;font-weight:720}
     .badge{font-size:11px;color:#aeb8c7;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:#0d1118}
     .controls{padding:16px;display:flex;flex-direction:column;gap:14px}
+
+    .dropzone{position:relative;border:1px dashed #394558;border-radius:16px;min-height:150px;display:grid;place-items:center;text-align:center;padding:20px;background:#0d1118;transition:.18s ease}
+    .dropzone.drag{border-color:#8b7cff;background:#121526;box-shadow:0 0 0 3px rgba(139,124,255,.10)}
+    .dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{width:45px;height:45px;margin:0 auto 10px;border-radius:14px;border:1px solid #303847;display:grid;place-items:center;color:#b3aaff;background:#121722;font-size:22px}
+    .dropzone strong{display:block;font-size:13px;margin-bottom:5px}
+    .dropzone span{font-size:11px;color:#7f8a9b;line-height:1.5}
+
+    .file-card{display:none;border:1px solid var(--line);border-radius:14px;background:#0d1118;padding:11px 12px;gap:10px;align-items:center}
+    .file-card.show{display:flex}
+    .thumb{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#fff;border:1px solid #303847}
+    .file-meta{min-width:0;flex:1}
+    .file-name{font-size:12px;color:#e5eaf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-info{margin-top:4px;font-size:10px;color:#7f8a9b}
+
     .field{display:flex;flex-direction:column;gap:7px}
     label{font-size:12px;color:#b7c0cf;font-weight:650}
-    textarea,select{width:100%;border:1px solid #303847;background:#0d1118;color:var(--text);border-radius:13px;outline:none;transition:.18s ease}
-    textarea{min-height:150px;resize:vertical;padding:12px 13px;line-height:1.5}
-    select{height:43px;padding:0 12px}
-    textarea:focus,select:focus{border-color:#665bea;box-shadow:0 0 0 3px rgba(139,124,255,.12)}
-    .hint{font-size:11px;color:#788497;line-height:1.5}
-    .generate{border:0;border-radius:13px;min-height:48px;color:white;font-weight:750;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 12px 30px rgba(98,93,255,.26);transition:.18s ease}
-    .generate:hover{transform:translateY(-1px);filter:brightness(1.05)}
-    .generate:disabled{cursor:not-allowed;opacity:.55;transform:none}
+    .range-row{display:grid;grid-template-columns:1fr 50px;gap:10px;align-items:center}
+    input[type="range"]{width:100%;accent-color:#8b7cff}
+    .value{height:30px;border:1px solid var(--line);border-radius:9px;background:#0d1118;display:grid;place-items:center;font-size:11px;color:#c5cedb}
+    .color-row{display:grid;grid-template-columns:46px 1fr;gap:10px}
+    input[type="color"]{width:46px;height:38px;border:1px solid var(--line);border-radius:10px;background:#0d1118;padding:4px}
+    .bg-label{border:1px solid var(--line);border-radius:10px;background:#0d1118;display:flex;align-items:center;padding:0 11px;color:#9ca7b8;font-size:11px}
+    .hint{font-size:11px;color:#788497;line-height:1.55}
+
+    .primary{border:0;border-radius:13px;min-height:46px;color:#fff;font-weight:750;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 12px 30px rgba(98,93,255,.25);transition:.18s ease}
+    .primary:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05)}
+    .primary:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+    .secondary{border:1px solid var(--line);background:#171c26;color:var(--text);padding:9px 11px;border-radius:11px;font-size:12px;transition:.18s ease}
+    .secondary:hover:not(:disabled){background:#1c2230;border-color:#354052}
+    .secondary:disabled{opacity:.38;cursor:not-allowed}
+    .button-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
     .small-note{font-size:11px;color:#7f8999;line-height:1.55;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#0c1016}
 
-    .result-panel{position:relative;display:flex;flex-direction:column;min-width:0}
-    .result-body{position:relative;flex:1;min-height:620px;display:grid;place-items:center;padding:22px;background:
-      linear-gradient(45deg,#10141c 25%,transparent 25%) 0 0/24px 24px,
-      linear-gradient(45deg,transparent 75%,#10141c 75%) 0 0/24px 24px,
-      linear-gradient(45deg,transparent 75%,#10141c 75%) 12px -12px/24px 24px,
-      linear-gradient(45deg,#10141c 25%,#0d1118 25%) 12px 12px/24px 24px;
+    .preview-panel{display:flex;flex-direction:column}
+    .preview-tabs{display:flex;gap:7px}
+    .tab{border:1px solid var(--line);background:#0e131b;color:#8f9aac;padding:6px 9px;border-radius:9px;font-size:11px}
+    .tab.active{color:#fff;border-color:#4b4f7c;background:#191a2b}
+    .preview-body{position:relative;flex:1;min-height:620px;display:grid;place-items:center;padding:22px;overflow:auto}
+    .checker{
+      background-color:#eef0f3;
+      background-image:linear-gradient(45deg,#d8dbe0 25%,transparent 25%),linear-gradient(-45deg,#d8dbe0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d8dbe0 75%),linear-gradient(-45deg,transparent 75%,#d8dbe0 75%);
+      background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;
     }
     .empty{text-align:center;max-width:420px;padding:24px;color:#8d98a9}
     .empty-icon{width:58px;height:58px;margin:0 auto 15px;border:1px solid #303847;border-radius:18px;display:grid;place-items:center;background:#111720;color:#a79cff;font-size:26px}
     .empty strong{display:block;color:#dbe1ea;margin-bottom:7px;font-size:15px}
     .empty p{margin:0;line-height:1.6;font-size:12px}
-    .result-image{display:block;max-width:100%;max-height:calc(100dvh - 180px);object-fit:contain;border-radius:15px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
-    .result-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-top:1px solid var(--line);background:#11151d}
+    #originalImage,#outputCanvas{display:none;max-width:100%;max-height:calc(100dvh - 190px);object-fit:contain;border-radius:14px;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+    #outputCanvas{background:transparent}
+    .preview-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-top:1px solid var(--line);background:#11151d}
     .result-status{font-size:11px;color:#8995a7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .tool-buttons{display:flex;gap:7px}
-    .secondary{border:1px solid var(--line);background:#171c26;color:var(--text);padding:8px 10px;border-radius:10px;font-size:12px}
-    .secondary:disabled{opacity:.4;cursor:not-allowed}
-    .error{color:var(--danger)}
-    .spinner{width:24px;height:24px;border:2px solid #31394a;border-top-color:#9d91ff;border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 13px}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    .result-status.error{color:var(--danger)}
+    .tool-buttons{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
     .footer{display:flex;justify-content:space-between;gap:12px;color:#707b8c;font-size:11px;padding:0 4px 4px}
     .footer b{font-weight:650;color:#9aa5b6}
 
@@ -90,9 +111,8 @@
       .workspace{grid-template-columns:1fr;min-height:0}
       .panel{border-radius:16px}
       .controls{padding:13px}
-      textarea{min-height:110px}
-      .result-body{min-height:480px;padding:12px}
-      .result-image{max-height:70dvh}
+      .preview-body{min-height:480px;padding:12px}
+      #originalImage,#outputCanvas{max-height:70dvh}
       .footer{display:none}
     }
   </style>
@@ -104,170 +124,352 @@
         <div class="logo">CF</div>
         <div>
           <h1>Create Foto</h1>
-          <p>AI Image Lab · generator langsung di web kita</p>
+          <p>Transparent Asset Processor · browser-side</p>
         </div>
       </div>
-      <span class="status"><span class="dot"></span> Puter.js ready</span>
+      <span class="status"><span class="dot"></span> No login · No API</span>
     </header>
 
     <section class="workspace">
       <aside class="panel">
         <div class="panel-head">
-          <div class="panel-title">Generate Image</div>
-          <div class="badge">V0.2</div>
+          <div class="panel-title">Asset Processor</div>
+          <div class="badge">V0.1-A</div>
         </div>
         <div class="controls">
-          <div class="field">
-            <label for="prompt">Prompt</label>
-            <textarea id="prompt" placeholder="Contoh: sakura branch"></textarea>
-            <div class="hint">Ctrl + Enter untuk generate.</div>
+          <div class="dropzone" id="dropzone">
+            <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" />
+            <div>
+              <div class="drop-icon">＋</div>
+              <strong>Upload hasil Perchance</strong>
+              <span>Klik atau drag & drop PNG / JPG / WebP.<br>Background polos putih/krem paling ideal.</span>
+            </div>
+          </div>
+
+          <div class="file-card" id="fileCard">
+            <img class="thumb" id="thumb" alt="Preview file" />
+            <div class="file-meta">
+              <div class="file-name" id="fileName">-</div>
+              <div class="file-info" id="fileInfo">-</div>
+            </div>
           </div>
 
           <div class="field">
-            <label for="style">Style preset</label>
-            <select id="style">
-              <option value="japanese">Japanese Vintage</option>
-              <option value="watercolor">Watercolor Painting</option>
-              <option value="botanical">Botanical Engraving</option>
-              <option value="none">Tanpa tambahan style</option>
-            </select>
+            <label>Background detected</label>
+            <div class="color-row">
+              <input id="bgColor" type="color" value="#ffffff" aria-label="Background color" />
+              <div class="bg-label" id="bgLabel">Auto dari 4 sudut gambar</div>
+            </div>
           </div>
 
-          <button class="generate" id="generateBtn" type="button">Generate Image</button>
-
-          <div class="small-note">
-            Generator ini memakai Puter.js langsung dari browser. Tidak ada API key di repo kita. Saat diperlukan, Puter dapat meminta autentikasi pengguna dan penggunaan AI mengikuti model user-pays Puter.
+          <div class="field">
+            <label for="threshold">Threshold</label>
+            <div class="range-row">
+              <input id="threshold" type="range" min="5" max="140" value="52" />
+              <div class="value" id="thresholdValue">52</div>
+            </div>
+            <div class="hint">Naikkan kalau background masih tersisa. Turunkan kalau detail objek ikut hilang.</div>
           </div>
+
+          <div class="field">
+            <label for="feather">Edge feather</label>
+            <div class="range-row">
+              <input id="feather" type="range" min="0" max="45" value="14" />
+              <div class="value" id="featherValue">14</div>
+            </div>
+            <div class="hint">Membuat pinggir transparansi lebih halus dan mengurangi halo.</div>
+          </div>
+
+          <button class="primary" id="removeBtn" type="button" disabled>Remove Background</button>
+          <div class="button-row">
+            <button class="secondary" id="resetBtn" type="button" disabled>Reset</button>
+            <button class="secondary" id="whiteBtn" type="button" disabled>Force White</button>
+          </div>
+
+          <div class="small-note">Semua proses terjadi langsung di browser. Gambar tidak dikirim ke API atau server Create Foto.</div>
         </div>
       </aside>
 
-      <section class="panel result-panel">
+      <section class="panel preview-panel">
         <div class="panel-head">
-          <div class="panel-title">Result</div>
-          <div class="badge" id="engineBadge">Puter AI</div>
-        </div>
-
-        <div class="result-body" id="resultBody">
-          <div class="empty" id="emptyState">
-            <div class="empty-icon">✦</div>
-            <strong>Belum ada gambar</strong>
-            <p>Ketik prompt di panel kiri lalu Generate. Hasil akan muncul langsung di halaman Create Foto, bukan iframe.</p>
+          <div class="panel-title">Preview</div>
+          <div class="preview-tabs">
+            <button class="tab active" id="processedTab" type="button">Transparent</button>
+            <button class="tab" id="originalTab" type="button">Original</button>
           </div>
         </div>
 
-        <div class="result-tools">
+        <div class="preview-body checker" id="previewBody">
+          <div class="empty" id="emptyState">
+            <div class="empty-icon">✦</div>
+            <strong>Belum ada asset</strong>
+            <p>Upload gambar hasil Perchance di panel kiri. Setelah diproses, background transparan akan terlihat di checkerboard ini.</p>
+          </div>
+          <img id="originalImage" alt="Original image" />
+          <canvas id="outputCanvas"></canvas>
+        </div>
+
+        <div class="preview-tools">
           <div class="result-status" id="resultStatus">Ready</div>
           <div class="tool-buttons">
-            <button class="secondary" id="openBtn" type="button" disabled>Open Image</button>
-            <button class="secondary" id="clearBtn" type="button">Clear</button>
+            <button class="secondary" id="downloadBtn" type="button" disabled>Download PNG</button>
+            <button class="secondary" id="clearBtn" type="button" disabled>Clear</button>
           </div>
         </div>
       </section>
     </section>
 
     <footer class="footer">
-      <span><b>V0.2</b> · Puter.js direct generation test</span>
+      <span><b>V0.1-A</b> · Transparent Asset Processor</span>
       <span>GitHub → Surge auto deploy</span>
     </footer>
   </main>
 
   <script>
-    const promptEl = document.getElementById('prompt');
-    const styleEl = document.getElementById('style');
-    const generateBtn = document.getElementById('generateBtn');
-    const resultBody = document.getElementById('resultBody');
+    const fileInput = document.getElementById('fileInput');
+    const dropzone = document.getElementById('dropzone');
+    const fileCard = document.getElementById('fileCard');
+    const thumb = document.getElementById('thumb');
+    const fileName = document.getElementById('fileName');
+    const fileInfo = document.getElementById('fileInfo');
+    const bgColor = document.getElementById('bgColor');
+    const bgLabel = document.getElementById('bgLabel');
+    const threshold = document.getElementById('threshold');
+    const feather = document.getElementById('feather');
+    const thresholdValue = document.getElementById('thresholdValue');
+    const featherValue = document.getElementById('featherValue');
+    const removeBtn = document.getElementById('removeBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const whiteBtn = document.getElementById('whiteBtn');
+    const originalImage = document.getElementById('originalImage');
+    const outputCanvas = document.getElementById('outputCanvas');
+    const emptyState = document.getElementById('emptyState');
+    const previewBody = document.getElementById('previewBody');
+    const processedTab = document.getElementById('processedTab');
+    const originalTab = document.getElementById('originalTab');
     const resultStatus = document.getElementById('resultStatus');
-    const openBtn = document.getElementById('openBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
     const clearBtn = document.getElementById('clearBtn');
-    let currentImage = null;
 
-    const styleSuffix = {
-      japanese: 'vintage Japanese painted illustration, traditional ukiyo-e and watercolor style, fine engraved linework, muted elegant colors, hand-painted texture, highly detailed, clean composition, no text, no watermark',
-      watercolor: 'elegant watercolor painting, hand-painted texture, soft natural pigment, detailed brushwork, refined composition, no text, no watermark',
-      botanical: 'vintage botanical engraving illustration, fine etched linework, hand-colored print texture, detailed natural forms, isolated decorative composition, no text, no watermark',
-      none: ''
-    };
+    let sourceBitmap = null;
+    let sourceFile = null;
+    let sourceObjectUrl = null;
+    let processed = false;
 
-    function buildPrompt(){
-      const base = promptEl.value.trim();
-      const suffix = styleSuffix[styleEl.value] || '';
-      return suffix ? `${base}, ${suffix}` : base;
+    const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
+
+    function hexToRgb(hex){
+      const h = hex.replace('#','');
+      return {r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16)};
     }
 
-    function showEmpty(){
-      currentImage = null;
-      openBtn.disabled = true;
-      resultBody.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">✦</div>
-          <strong>Belum ada gambar</strong>
-          <p>Ketik prompt di panel kiri lalu Generate. Hasil akan muncul langsung di halaman Create Foto, bukan iframe.</p>
-        </div>`;
-      resultStatus.textContent = 'Ready';
-      resultStatus.classList.remove('error');
+    function rgbToHex(r,g,b){
+      return '#' + [r,g,b].map(v => Math.round(clamp(v,0,255)).toString(16).padStart(2,'0')).join('');
     }
 
-    async function generateImage(){
-      const finalPrompt = buildPrompt();
-      if(!promptEl.value.trim()){
-        promptEl.focus();
-        resultStatus.textContent = 'Isi prompt dulu.';
-        resultStatus.classList.add('error');
+    function setStatus(text, isError=false){
+      resultStatus.textContent = text;
+      resultStatus.classList.toggle('error',isError);
+    }
+
+    function setTab(which){
+      const original = which === 'original';
+      originalTab.classList.toggle('active', original);
+      processedTab.classList.toggle('active', !original);
+      originalImage.style.display = original && sourceBitmap ? 'block' : 'none';
+      outputCanvas.style.display = !original && processed ? 'block' : 'none';
+      emptyState.style.display = (!sourceBitmap || (!original && !processed)) ? 'block' : 'none';
+      previewBody.classList.toggle('checker', !original);
+    }
+
+    function detectBackgroundColor(bitmap){
+      const sample = document.createElement('canvas');
+      const size = 48;
+      sample.width = size;
+      sample.height = size;
+      const ctx = sample.getContext('2d', {willReadFrequently:true});
+      ctx.drawImage(bitmap,0,0,size,size);
+      const data = ctx.getImageData(0,0,size,size).data;
+      const points = [];
+      const region = 6;
+      const corners = [[0,0],[size-region,0],[0,size-region],[size-region,size-region]];
+      for(const [sx,sy] of corners){
+        for(let y=sy;y<sy+region;y++){
+          for(let x=sx;x<sx+region;x++){
+            const i=(y*size+x)*4;
+            if(data[i+3] > 0) points.push([data[i],data[i+1],data[i+2]]);
+          }
+        }
+      }
+      if(!points.length) return {r:255,g:255,b:255};
+      points.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));
+      const start=Math.floor(points.length*.2), end=Math.ceil(points.length*.8);
+      const mid=points.slice(start,end);
+      const sum=mid.reduce((s,p)=>[s[0]+p[0],s[1]+p[1],s[2]+p[2]],[0,0,0]);
+      return {r:sum[0]/mid.length,g:sum[1]/mid.length,b:sum[2]/mid.length};
+    }
+
+    async function loadFile(file){
+      if(!file || !file.type.startsWith('image/')){
+        setStatus('File harus berupa gambar PNG/JPG/WebP.', true);
         return;
       }
-
-      generateBtn.disabled = true;
-      generateBtn.textContent = 'Generating…';
-      openBtn.disabled = true;
-      resultStatus.textContent = 'Generating image…';
-      resultStatus.classList.remove('error');
-      resultBody.innerHTML = `
-        <div class="empty">
-          <div class="spinner"></div>
-          <strong>Sedang generate</strong>
-          <p>Puter mungkin meminta login/otorisasi saat pertama kali dipakai.</p>
-        </div>`;
-
       try{
-        if(typeof puter === 'undefined' || !puter.ai || !puter.ai.txt2img){
-          throw new Error('Puter.js tidak berhasil dimuat.');
-        }
+        if(sourceBitmap && sourceBitmap.close) sourceBitmap.close();
+        if(sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl);
+        sourceFile = file;
+        sourceBitmap = await createImageBitmap(file);
+        sourceObjectUrl = URL.createObjectURL(file);
 
-        const img = await puter.ai.txt2img(finalPrompt);
-        img.classList.add('result-image');
-        img.alt = promptEl.value.trim();
-        currentImage = img;
-        resultBody.innerHTML = '';
-        resultBody.appendChild(img);
-        resultStatus.textContent = 'Generate berhasil.';
-        openBtn.disabled = !img.src;
+        originalImage.src = sourceObjectUrl;
+        thumb.src = sourceObjectUrl;
+        fileName.textContent = file.name;
+        fileInfo.textContent = `${sourceBitmap.width} × ${sourceBitmap.height} · ${(file.size/1024/1024).toFixed(2)} MB`;
+        fileCard.classList.add('show');
+
+        const detected = detectBackgroundColor(sourceBitmap);
+        bgColor.value = rgbToHex(detected.r,detected.g,detected.b);
+        bgLabel.textContent = `Auto · ${bgColor.value.toUpperCase()}`;
+
+        processed = false;
+        outputCanvas.width = sourceBitmap.width;
+        outputCanvas.height = sourceBitmap.height;
+        removeBtn.disabled = false;
+        resetBtn.disabled = false;
+        whiteBtn.disabled = false;
+        clearBtn.disabled = false;
+        downloadBtn.disabled = true;
+        setStatus('Gambar siap diproses.');
+        setTab('original');
       }catch(err){
         console.error(err);
-        currentImage = null;
-        resultBody.innerHTML = `
-          <div class="empty">
-            <div class="empty-icon">!</div>
-            <strong>Generate gagal</strong>
-            <p>${String(err && err.message ? err.message : err).replace(/[<>]/g,'')}</p>
-          </div>`;
-        resultStatus.textContent = 'Generate gagal — lihat pesan di atas.';
-        resultStatus.classList.add('error');
-      }finally{
-        generateBtn.disabled = false;
-        generateBtn.textContent = 'Generate Image';
+        setStatus('Gagal membaca gambar.', true);
       }
     }
 
-    generateBtn.addEventListener('click', generateImage);
-    promptEl.addEventListener('keydown', e => {
-      if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generateImage();
-    });
+    function removeBackground(){
+      if(!sourceBitmap) return;
+      setStatus('Memproses transparansi…');
+      const ctx = outputCanvas.getContext('2d', {willReadFrequently:true});
+      outputCanvas.width = sourceBitmap.width;
+      outputCanvas.height = sourceBitmap.height;
+      ctx.clearRect(0,0,outputCanvas.width,outputCanvas.height);
+      ctx.drawImage(sourceBitmap,0,0);
 
-    openBtn.addEventListener('click', () => {
-      if(currentImage && currentImage.src) window.open(currentImage.src, '_blank', 'noopener,noreferrer');
-    });
+      const image = ctx.getImageData(0,0,outputCanvas.width,outputCanvas.height);
+      const d = image.data;
+      const bg = hexToRgb(bgColor.value);
+      const t = Number(threshold.value);
+      const f = Number(feather.value);
+      const low = Math.max(0,t-f);
+      const high = Math.max(low+1,t+f);
 
-    clearBtn.addEventListener('click', showEmpty);
+      for(let i=0;i<d.length;i+=4){
+        const r=d[i], g=d[i+1], b=d[i+2], originalAlpha=d[i+3]/255;
+        if(originalAlpha === 0) continue;
+        const dr=r-bg.r, dg=g-bg.g, db=b-bg.b;
+        const dist=Math.sqrt(dr*dr+dg*dg+db*db);
+        let alpha=clamp((dist-low)/(high-low),0,1) * originalAlpha;
+
+        if(alpha < .01){
+          d[i+3]=0;
+          continue;
+        }
+
+        if(alpha < .995){
+          const inv = 1-alpha;
+          d[i]   = clamp((r - bg.r*inv)/alpha,0,255);
+          d[i+1] = clamp((g - bg.g*inv)/alpha,0,255);
+          d[i+2] = clamp((b - bg.b*inv)/alpha,0,255);
+        }
+        d[i+3]=Math.round(alpha*255);
+      }
+
+      ctx.putImageData(image,0,0);
+      processed = true;
+      downloadBtn.disabled = false;
+      setStatus('Background selesai dihapus.');
+      setTab('processed');
+    }
+
+    function resetSettings(){
+      if(!sourceBitmap) return;
+      const detected=detectBackgroundColor(sourceBitmap);
+      bgColor.value=rgbToHex(detected.r,detected.g,detected.b);
+      bgLabel.textContent=`Auto · ${bgColor.value.toUpperCase()}`;
+      threshold.value=52;
+      feather.value=14;
+      thresholdValue.textContent='52';
+      featherValue.textContent='14';
+      processed=false;
+      downloadBtn.disabled=true;
+      setStatus('Setting direset. Klik Remove Background.');
+      setTab('original');
+    }
+
+    function forceWhite(){
+      bgColor.value='#ffffff';
+      bgLabel.textContent='Manual · #FFFFFF';
+      if(sourceBitmap) removeBackground();
+    }
+
+    function downloadPng(){
+      if(!processed) return;
+      outputCanvas.toBlob(blob=>{
+        if(!blob){setStatus('Gagal membuat PNG.',true);return;}
+        const a=document.createElement('a');
+        const url=URL.createObjectURL(blob);
+        const base=(sourceFile?.name || 'asset').replace(/\.[^.]+$/,'');
+        a.href=url;
+        a.download=`${base}-transparent.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        setStatus('PNG transparan diunduh.');
+      },'image/png');
+    }
+
+    function clearAll(){
+      if(sourceBitmap && sourceBitmap.close) sourceBitmap.close();
+      if(sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl);
+      sourceBitmap=null;
+      sourceFile=null;
+      sourceObjectUrl=null;
+      processed=false;
+      fileInput.value='';
+      fileCard.classList.remove('show');
+      originalImage.removeAttribute('src');
+      thumb.removeAttribute('src');
+      outputCanvas.width=1;
+      outputCanvas.height=1;
+      removeBtn.disabled=true;
+      resetBtn.disabled=true;
+      whiteBtn.disabled=true;
+      clearBtn.disabled=true;
+      downloadBtn.disabled=true;
+      bgColor.value='#ffffff';
+      bgLabel.textContent='Auto dari 4 sudut gambar';
+      setStatus('Ready');
+      setTab('processed');
+    }
+
+    fileInput.addEventListener('change',e=>loadFile(e.target.files?.[0]));
+    ['dragenter','dragover'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.classList.add('drag')}));
+    ['dragleave','drop'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.classList.remove('drag')}));
+    dropzone.addEventListener('drop',e=>loadFile(e.dataTransfer?.files?.[0]));
+
+    threshold.addEventListener('input',()=>{thresholdValue.textContent=threshold.value;if(sourceBitmap && processed) removeBackground()});
+    feather.addEventListener('input',()=>{featherValue.textContent=feather.value;if(sourceBitmap && processed) removeBackground()});
+    bgColor.addEventListener('input',()=>{bgLabel.textContent=`Manual · ${bgColor.value.toUpperCase()}`;if(sourceBitmap && processed) removeBackground()});
+
+    removeBtn.addEventListener('click',removeBackground);
+    resetBtn.addEventListener('click',resetSettings);
+    whiteBtn.addEventListener('click',forceWhite);
+    downloadBtn.addEventListener('click',downloadPng);
+    clearBtn.addEventListener('click',clearAll);
+    originalTab.addEventListener('click',()=>setTab('original'));
+    processedTab.addEventListener('click',()=>setTab('processed'));
   </script>
 </body>
 </html>
