@@ -1,12 +1,8 @@
 name: Render Japanese Scene MP4
 
+# Auto-render is intentionally paused while composition is being locked.
+# Re-enable the push trigger only when the user explicitly asks to render.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "remotion-japanese/**"
-      - ".github/workflows/render-japanese.yml"
   workflow_dispatch:
 
 permissions:
