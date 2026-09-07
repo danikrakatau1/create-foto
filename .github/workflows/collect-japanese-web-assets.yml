@@ -14,128 +14,82 @@ permissions:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download license-friendly reference assets
+      - name: Download life-motion reference assets
         shell: bash
         run: |
           set -euo pipefail
-          OUT="japanese-web-reference-assets"
+          OUT="japanese-life-motion-assets"
           mkdir -p "$OUT"
 
-          fetch() {
+          fetch_optional() {
             local source="$1"
             local target="$2"
             echo "Downloading $target"
-            curl --fail --location --retry 3 --retry-delay 2 "$source" --output "$OUT/$target"
-            test -s "$OUT/$target"
+            if curl --fail --location --max-time 25 --retry 2 --retry-delay 2 "$source" --output "$OUT/$target"; then
+              test -s "$OUT/$target" || rm -f "$OUT/$target"
+            else
+              echo "WARN: failed $target" >&2
+              rm -f "$OUT/$target"
+            fi
           }
 
-          # Existing transparent sakura / floral references
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_sakura_cherry_blossom_branch.svg" "sakura-branch.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_sakura_cherry_blossom_branch_monochrome.svg" "sakura-branch-monochrome.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Sakura.svg" "sakura-flower-cc0.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Sakura_blossom.svg" "sakura-blossom.svg"
+          # Petals — tiny motion only
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Petal.svg" "life-petal.svg"
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_petal.svg" "life-simple-petal.svg"
 
-          # Existing clouds / architecture references
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cloud_svg.svg" "cloud-reference.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/SymbolPagoda.svg" "pagoda-symbol.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Pagoda.svg" "pagoda-gorinto-public-domain.svg"
+          # Birds / cranes — far background motion
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Crane_illustration.svg" "life-crane-illustration-cc0.svg"
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_flying_Pinhead_icon.svg" "life-bird-flying-pinhead-cc0.svg"
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_template.svg" "life-bird-template-public-domain.svg"
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/FlightSilhouettes.svg" "life-flight-silhouettes.svg"
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird01.svg" "life-bird01.svg"
 
-          # Existing Japanese ornament alternatives
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Japanese_geometric_wave_pattern.svg" "japanese-wave-pattern.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_Japanese_wave_illustration.svg" "japanese-wave-illustration.svg"
-
-          # LIFE MOTION CANDIDATES — Wikimedia-only so the collection is stable.
-          # Petals for sparse falling motion
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Petal.svg" "life-petal.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_petal.svg" "life-simple-petal.svg"
-
-          # Distant birds / cranes for slow background flight
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Crane_illustration.svg" "life-crane-illustration-cc0.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_flying_Pinhead_icon.svg" "life-bird-flying-pinhead-cc0.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_template.svg" "life-bird-template-public-domain.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/FlightSilhouettes.svg" "life-flight-silhouettes.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird01.svg" "life-bird01.svg"
-
-          # Atmosphere / optional accents
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Weather_icon_-_fog.svg" "life-fog-cc0.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Moon_crescent_symbol_(tips_upward).svg" "life-moon-crescent-cc0.svg"
+          # Atmosphere reference / mask
+          fetch_optional "https://commons.wikimedia.org/wiki/Special:Redirect/file/Weather_icon_-_fog.svg" "life-fog-cc0.svg"
 
           cat > "$OUT/README-LICENSES.md" <<'EOF'
-          # Japanese Web Reference Assets
+          # Japanese Life Motion Assets
 
-          Collected as motion/reference candidates for the Japanese scene. Keep this file with the assets so attribution requirements are not lost.
+          Web-sourced candidates for subtle motion in the Japanese Fuji scene.
 
-          ## Existing references
-          - sakura-branch.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
-            https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch.svg
-          - sakura-branch-monochrome.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
-            https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch_monochrome.svg
-          - sakura-flower-cc0.svg — Wikimedia Commons, Mnmazur, CC0 1.0
-            https://commons.wikimedia.org/wiki/File:Sakura.svg
-          - sakura-blossom.svg — Wikimedia Commons, Wanjan / vector adaptation by Rotideypoc41352, CC BY 3.0
-            https://commons.wikimedia.org/wiki/File:Sakura_blossom.svg
-          - cloud-reference.svg — Wikimedia Commons, Nevit Dilmen, CC BY-SA 3.0 / GFDL
-            https://commons.wikimedia.org/wiki/File:Cloud_svg.svg
-          - pagoda-symbol.svg — Wikimedia Commons, Stefan Fussan, CC BY-SA
-            https://commons.wikimedia.org/wiki/File:SymbolPagoda.svg
-          - pagoda-gorinto-public-domain.svg — Wikimedia Commons, Raeky / redrawn by Beao, public domain
-            https://commons.wikimedia.org/wiki/File:Pagoda.svg
-          - japanese-wave-pattern.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
-            https://commons.wikimedia.org/wiki/File:Japanese_geometric_wave_pattern.svg
-          - japanese-wave-illustration.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
-            https://commons.wikimedia.org/wiki/File:Simple_Japanese_wave_illustration.svg
-
-          ## Life-motion candidates
-          - life-petal.svg — Nevit Dilmen, CC BY-SA 3.0 / GFDL
+          - life-petal.svg — Nevit Dilmen — CC BY-SA 3.0 / GFDL
             https://commons.wikimedia.org/wiki/File:Petal.svg
-            Suggested use: 4–8 small falling petals only.
-          - life-simple-petal.svg — TheTraveller60, CC BY-SA 4.0
+          - life-simple-petal.svg — TheTraveller60 — CC BY-SA 4.0
             https://commons.wikimedia.org/wiki/File:Simple_petal.svg
-            Suggested use: alternate petal silhouette / depth variation.
-          - life-crane-illustration-cc0.svg — Francis Akuka / Wikimedia Foundation, CC0 1.0
+          - life-crane-illustration-cc0.svg — Francis Akuka / Wikimedia Foundation — CC0 1.0
             https://commons.wikimedia.org/wiki/File:Crane_illustration.svg
-            Suggested use: one very distant crane crossing slowly behind Fuji.
-          - life-bird-flying-pinhead-cc0.svg — Wikimedia Commons, CC0 1.0
+          - life-bird-flying-pinhead-cc0.svg — Wikimedia Commons — CC0 1.0
             https://commons.wikimedia.org/wiki/File:Bird_flying_Pinhead_icon.svg
-            Suggested use: tiny far-sky bird.
-          - life-bird-template-public-domain.svg — public domain
+          - life-bird-template-public-domain.svg — Public domain
             https://commons.wikimedia.org/wiki/File:Bird_template.svg
-            Suggested use: recolorable distant silhouette.
-          - life-flight-silhouettes.svg — L. Shyamal, CC BY-SA 2.5
+          - life-flight-silhouettes.svg — L. Shyamal — CC BY-SA 2.5
             https://commons.wikimedia.org/wiki/File:FlightSilhouettes.svg
-            Suggested use: reference pack for 2–3 distant birds.
-          - life-bird01.svg — Lionel Allorge, CC BY-SA 3.0 / GFDL
+          - life-bird01.svg — Lionel Allorge — CC BY-SA 3.0 / GFDL
             https://commons.wikimedia.org/wiki/File:Bird01.svg
-            Suggested use: one tiny silhouette only.
-          - life-fog-cc0.svg — Open Clip Art / gnokii, CC0 / public domain
+          - life-fog-cc0.svg — Open Clip Art / gnokii — CC0 / public domain
             https://commons.wikimedia.org/wiki/File:Weather_icon_-_fog.svg
-            Suggested use: mask/reference; actual fog should be rendered as translucent gradient layers.
-          - life-moon-crescent-cc0.svg — Karl432, CC0 1.0
-            https://commons.wikimedia.org/wiki/File:Moon_crescent_symbol_(tips_upward).svg
-            Suggested use: optional night variant only.
 
-          ## Motion guidance
-          To keep the scene alive but premium:
-          1. Background/Fuji/Pagoda remain nearly static.
-          2. Clouds drift 6–18 px over several seconds.
-          3. Sakura branches sway from the branch base only.
-          4. One foreground branch can move slightly faster for parallax, but never fly across the frame.
-          5. Use 4–8 tiny petals total, staggered and low opacity.
-          6. Add one crane or 2–3 tiny distant birds at most.
-          7. Add translucent mist as gradient layers; SVG fog is only a reference/mask.
-          8. Keep motion asymmetrical so the scene feels organic rather than looped.
+          Motion plan:
+          - 4–8 tiny petals total, slow fall, low opacity.
+          - 1 crane OR 2–3 tiny birds only, far behind Fuji.
+          - fog SVG is a reference/mask; final mist should be translucent gradients.
+          - keep branch sway anchored at the branch base.
+          - never animate a whole blossom/cutout as a flying object.
           EOF
 
-      - name: Upload reference asset bundle
+          echo "Collected files:"
+          find "$OUT" -maxdepth 1 -type f -printf '%f\n' | sort
+
+      - name: Upload life-motion asset bundle
         uses: actions/upload-artifact@v4
         with:
-          name: japanese-web-reference-assets
-          path: japanese-web-reference-assets/
+          name: japanese-life-motion-assets
+          path: japanese-life-motion-assets/
           if-no-files-found: error
           retention-days: 7
