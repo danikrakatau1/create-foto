@@ -1,0 +1,128 @@
+name: Collect Japanese Web Reference Assets
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/collect-japanese-web-assets.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download license-friendly reference assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="japanese-web-reference-assets"
+          mkdir -p "$OUT"
+
+          fetch() {
+            local source="$1"
+            local target="$2"
+            echo "Downloading $target"
+            curl --fail --location --retry 3 --retry-delay 2 "$source" --output "$OUT/$target"
+            test -s "$OUT/$target"
+          }
+
+          # Sakura / floral — transparent SVG
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_sakura_cherry_blossom_branch.svg" "sakura-branch.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_sakura_cherry_blossom_branch_monochrome.svg" "sakura-branch-monochrome.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Sakura.svg" "sakura-flower-cc0.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Sakura_blossom.svg" "sakura-blossom.svg"
+
+          # Clouds / architecture — transparent SVG
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cloud_svg.svg" "cloud-reference.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/SymbolPagoda.svg" "pagoda-symbol.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Pagoda.svg" "pagoda-gorinto-public-domain.svg"
+
+          # Japanese ornament / foreground alternatives
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Japanese_geometric_wave_pattern.svg" "japanese-wave-pattern.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_Japanese_wave_illustration.svg" "japanese-wave-illustration.svg"
+
+          cat > "$OUT/README-LICENSES.md" <<'EOF'
+          # Japanese Web Reference Assets
+
+          Collected as motion/reference candidates for the Japanese scene. Keep this file with the assets so attribution requirements are not lost.
+
+          ## Sakura branch
+          - File: sakura-branch.svg
+          - Source: Wikimedia Commons — Simple sakura cherry blossom branch.svg
+          - Author: Bajinra
+          - License: CC BY-SA 4.0
+          - Page: https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch.svg
+
+          ## Sakura branch monochrome
+          - File: sakura-branch-monochrome.svg
+          - Source: Wikimedia Commons — Simple sakura cherry blossom branch monochrome.svg
+          - Author: Bajinra
+          - License: CC BY-SA 4.0
+          - Page: https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch_monochrome.svg
+
+          ## Sakura flower outline
+          - File: sakura-flower-cc0.svg
+          - Source: Wikimedia Commons — Sakura.svg
+          - Author: Mnmazur
+          - License: CC0 1.0
+          - Page: https://commons.wikimedia.org/wiki/File:Sakura.svg
+
+          ## Sakura blossom
+          - File: sakura-blossom.svg
+          - Source: Wikimedia Commons — Sakura blossom.svg
+          - Authors: Wanjan / vector adaptation by Rotideypoc41352
+          - License: CC BY 3.0
+          - Page: https://commons.wikimedia.org/wiki/File:Sakura_blossom.svg
+
+          ## Cloud reference
+          - File: cloud-reference.svg
+          - Source: Wikimedia Commons — Cloud svg.svg
+          - Author: Nevit Dilmen
+          - License: CC BY-SA 3.0 or GFDL (choose an applicable license and preserve attribution)
+          - Page: https://commons.wikimedia.org/wiki/File:Cloud_svg.svg
+
+          ## Pagoda symbol
+          - File: pagoda-symbol.svg
+          - Source: Wikimedia Commons — SymbolPagoda.svg
+          - Author: Stefan Fussan
+          - License: CC BY-SA (Commons page lists 4.0 and prior versions; preserve attribution)
+          - Page: https://commons.wikimedia.org/wiki/File:SymbolPagoda.svg
+
+          ## Gorinto pagoda diagram
+          - File: pagoda-gorinto-public-domain.svg
+          - Source: Wikimedia Commons — Pagoda.svg
+          - Author: Raeky / redrawn by Beao
+          - License: Public domain
+          - Page: https://commons.wikimedia.org/wiki/File:Pagoda.svg
+
+          ## Japanese geometric wave pattern
+          - File: japanese-wave-pattern.svg
+          - Source: Wikimedia Commons — Japanese geometric wave pattern.svg
+          - Author: Bajinra
+          - License: CC BY-SA 4.0
+          - Page: https://commons.wikimedia.org/wiki/File:Japanese_geometric_wave_pattern.svg
+
+          ## Japanese wave illustration
+          - File: japanese-wave-illustration.svg
+          - Source: Wikimedia Commons — Simple Japanese wave illustration.svg
+          - Author: Bajinra
+          - License: CC BY-SA 4.0
+          - Page: https://commons.wikimedia.org/wiki/File:Simple_Japanese_wave_illustration.svg
+          EOF
+
+      - name: Upload reference asset bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: japanese-web-reference-assets
+          path: japanese-web-reference-assets/
+          if-no-files-found: error
+          retention-days: 7
