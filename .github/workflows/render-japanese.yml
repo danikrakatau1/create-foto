@@ -1,12 +1,7 @@
 name: Render Japanese Scene MP4
 
+# Motion V1.1 is being locked. Keep automatic renders paused until the user says "render".
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "remotion-japanese/**"
-      - ".github/workflows/render-japanese.yml"
   workflow_dispatch:
 
 permissions:
@@ -26,7 +21,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Download locked artwork assets from Adobe Creative Cloud
+      - name: Download locked artwork assets
         shell: bash
         run: |
           set -euo pipefail
@@ -40,6 +35,7 @@ jobs:
             test -s "remotion-japanese/public/assets/${target}"
           }
 
+          # Main locked artwork stack (Adobe Creative Cloud)
           fetch_asset "https://at.adobe.com/rBByVjy7H6u3EObB" "background-main.jpg"
           fetch_asset "https://at.adobe.com/gojP2pybWaZjHYjd" "fuji-main.png"
           fetch_asset "https://at.adobe.com/DSz41wrGVsC6PNsT" "pagoda-main.png"
@@ -57,6 +53,10 @@ jobs:
           fetch_asset "https://at.adobe.com/3Uh45cSUSyxQzXpH" "peony-left.png"
           fetch_asset "https://at.adobe.com/SNDRUuzTGtdtSbjs" "peony-center.png"
           fetch_asset "https://at.adobe.com/7qECzt0ien2m3F4i" "peony-right.png"
+
+          # Extra transparent reference pool — Wikimedia Commons, CC0.
+          fetch_asset "https://upload.wikimedia.org/wikipedia/commons/8/87/Sakura.svg" "sakura-cc0.svg"
+          fetch_asset "https://upload.wikimedia.org/wikipedia/commons/1/11/Cherry_blossom.svg" "cherry-blossom-cc0.svg"
 
       - name: Install Remotion dependencies
         working-directory: remotion-japanese
