@@ -1,4 +1,5 @@
 // JAPANESE SCENE — MOTION LOCK V1.2
+// Auto-render trigger: V1.2 no-flying-flowers validation.
 // Fix: no full blossom/branch assets may fly across frame.
 // Motion stays in soft clouds, microscopic branch sway, subtle camera push, and a sparse petal field.
 export const sceneConfig = {
