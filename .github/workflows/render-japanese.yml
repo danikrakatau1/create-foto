@@ -1,7 +1,13 @@
 name: Render Japanese Scene MP4
 
-# Motion V1.1 is being locked. Keep automatic renders paused until the user says "render".
+# Auto-render enabled for changes inside remotion-japanese/**.
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "remotion-japanese/**"
+
   workflow_dispatch:
 
 permissions:
