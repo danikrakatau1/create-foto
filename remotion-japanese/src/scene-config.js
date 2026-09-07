@@ -1,6 +1,7 @@
 // JAPANESE SCENE — MOTION LOCK V1.4 FINAL CONFIG
 // Keep the approved composition. Fix the reversed sakura branch by removing horizontal mirroring.
 // Motion remains staged, calm, and nearly static after each reveal.
+// Render retry after refreshing the background asset source.
 export const sceneConfig = {
   durationSeconds: 10,
   motionLock: {
