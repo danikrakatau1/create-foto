@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#090b10" />
-  <title>Create Foto — Transparent Asset Processor</title>
+  <title>Create Foto — Smart Transparent Asset Processor</title>
   <style>
     :root{
       color-scheme:dark;
       --bg:#090b10;
       --panel:#11151d;
-      --panel2:#151a24;
       --line:#262e3b;
       --text:#f5f7fb;
       --muted:#929cad;
@@ -61,6 +60,9 @@
     .file-name{font-size:12px;color:#e5eaf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .file-info{margin-top:4px;font-size:10px;color:#7f8a9b}
 
+    .mode-card{padding:11px 12px;border:1px solid rgba(110,231,168,.22);border-radius:13px;background:rgba(110,231,168,.055)}
+    .mode-card strong{display:block;font-size:11px;color:#bfeecf;margin-bottom:4px}
+    .mode-card span{display:block;font-size:10px;color:#81958b;line-height:1.55}
     .field{display:flex;flex-direction:column;gap:7px}
     label{font-size:12px;color:#b7c0cf;font-weight:650}
     .range-row{display:grid;grid-template-columns:1fr 50px;gap:10px;align-items:center}
@@ -124,17 +126,17 @@
         <div class="logo">CF</div>
         <div>
           <h1>Create Foto</h1>
-          <p>Transparent Asset Processor · browser-side</p>
+          <p>Smart Transparent Asset Processor · browser-side</p>
         </div>
       </div>
-      <span class="status"><span class="dot"></span> No login · No API</span>
+      <span class="status"><span class="dot"></span> Smart Border · No API</span>
     </header>
 
     <section class="workspace">
       <aside class="panel">
         <div class="panel-head">
           <div class="panel-title">Asset Processor</div>
-          <div class="badge">V0.1-A</div>
+          <div class="badge">V0.1-A2</div>
         </div>
         <div class="controls">
           <div class="dropzone" id="dropzone">
@@ -154,6 +156,11 @@
             </div>
           </div>
 
+          <div class="mode-card">
+            <strong>Smart Border Removal</strong>
+            <span>Yang dihapus hanya background dengan warna mirip yang tersambung ke tepi gambar. Highlight putih di dalam awan/bunga tidak ikut dibolongi.</span>
+          </div>
+
           <div class="field">
             <label>Background detected</label>
             <div class="color-row">
@@ -163,30 +170,30 @@
           </div>
 
           <div class="field">
-            <label for="threshold">Threshold</label>
+            <label for="threshold">Border tolerance</label>
             <div class="range-row">
-              <input id="threshold" type="range" min="5" max="140" value="52" />
-              <div class="value" id="thresholdValue">52</div>
+              <input id="threshold" type="range" min="5" max="120" value="42" />
+              <div class="value" id="thresholdValue">42</div>
             </div>
-            <div class="hint">Naikkan kalau background masih tersisa. Turunkan kalau detail objek ikut hilang.</div>
+            <div class="hint">Naikkan jika sisa background masih menempel di luar objek. Karena memakai konektivitas tepi, warna serupa di dalam objek tetap dipertahankan.</div>
           </div>
 
           <div class="field">
             <label for="feather">Edge feather</label>
             <div class="range-row">
-              <input id="feather" type="range" min="0" max="45" value="14" />
-              <div class="value" id="featherValue">14</div>
+              <input id="feather" type="range" min="0" max="36" value="12" />
+              <div class="value" id="featherValue">12</div>
             </div>
-            <div class="hint">Membuat pinggir transparansi lebih halus dan mengurangi halo.</div>
+            <div class="hint">Menghaluskan hanya tepian background yang terhubung ke luar.</div>
           </div>
 
-          <button class="primary" id="removeBtn" type="button" disabled>Remove Background</button>
+          <button class="primary" id="removeBtn" type="button" disabled>Smart Remove Background</button>
           <div class="button-row">
             <button class="secondary" id="resetBtn" type="button" disabled>Reset</button>
             <button class="secondary" id="whiteBtn" type="button" disabled>Force White</button>
           </div>
 
-          <div class="small-note">Semua proses terjadi langsung di browser. Gambar tidak dikirim ke API atau server Create Foto.</div>
+          <div class="small-note">Semua proses terjadi langsung di browser. Tidak ada login, API, atau upload gambar ke server Create Foto.</div>
         </div>
       </aside>
 
@@ -203,7 +210,7 @@
           <div class="empty" id="emptyState">
             <div class="empty-icon">✦</div>
             <strong>Belum ada asset</strong>
-            <p>Upload gambar hasil Perchance di panel kiri. Setelah diproses, background transparan akan terlihat di checkerboard ini.</p>
+            <p>Upload gambar hasil Perchance. Smart Border akan membuang background dari luar ke dalam tanpa menghapus highlight putih yang terkurung di dalam objek.</p>
           </div>
           <img id="originalImage" alt="Original image" />
           <canvas id="outputCanvas"></canvas>
@@ -220,7 +227,7 @@
     </section>
 
     <footer class="footer">
-      <span><b>V0.1-A</b> · Transparent Asset Processor</span>
+      <span><b>V0.1-A2</b> · Smart Border Transparent Processor</span>
       <span>GitHub → Surge auto deploy</span>
     </footer>
   </main>
@@ -255,6 +262,7 @@
     let sourceFile = null;
     let sourceObjectUrl = null;
     let processed = false;
+    let reprocessTimer = null;
 
     const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
 
@@ -284,26 +292,29 @@
 
     function detectBackgroundColor(bitmap){
       const sample = document.createElement('canvas');
-      const size = 48;
+      const size = 64;
       sample.width = size;
       sample.height = size;
       const ctx = sample.getContext('2d', {willReadFrequently:true});
       ctx.drawImage(bitmap,0,0,size,size);
       const data = ctx.getImageData(0,0,size,size).data;
       const points = [];
-      const region = 6;
+      const region = 8;
       const corners = [[0,0],[size-region,0],[0,size-region],[size-region,size-region]];
+
       for(const [sx,sy] of corners){
         for(let y=sy;y<sy+region;y++){
           for(let x=sx;x<sx+region;x++){
             const i=(y*size+x)*4;
-            if(data[i+3] > 0) points.push([data[i],data[i+1],data[i+2]]);
+            if(data[i+3] > 20) points.push([data[i],data[i+1],data[i+2]]);
           }
         }
       }
+
       if(!points.length) return {r:255,g:255,b:255};
       points.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));
-      const start=Math.floor(points.length*.2), end=Math.ceil(points.length*.8);
+      const start=Math.floor(points.length*.2);
+      const end=Math.ceil(points.length*.8);
       const mid=points.slice(start,end);
       const sum=mid.reduce((s,p)=>[s[0]+p[0],s[1]+p[1],s[2]+p[2]],[0,0,0]);
       return {r:sum[0]/mid.length,g:sum[1]/mid.length,b:sum[2]/mid.length};
@@ -314,9 +325,11 @@
         setStatus('File harus berupa gambar PNG/JPG/WebP.', true);
         return;
       }
+
       try{
         if(sourceBitmap && sourceBitmap.close) sourceBitmap.close();
         if(sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl);
+
         sourceFile = file;
         sourceBitmap = await createImageBitmap(file);
         sourceObjectUrl = URL.createObjectURL(file);
@@ -339,7 +352,7 @@
         whiteBtn.disabled = false;
         clearBtn.disabled = false;
         downloadBtn.disabled = true;
-        setStatus('Gambar siap diproses.');
+        setStatus('Gambar siap. Klik Smart Remove Background.');
         setTab('original');
       }catch(err){
         console.error(err);
@@ -349,47 +362,119 @@
 
     function removeBackground(){
       if(!sourceBitmap) return;
-      setStatus('Memproses transparansi…');
+
+      setStatus('Smart Border sedang memproses…');
       const ctx = outputCanvas.getContext('2d', {willReadFrequently:true});
-      outputCanvas.width = sourceBitmap.width;
-      outputCanvas.height = sourceBitmap.height;
-      ctx.clearRect(0,0,outputCanvas.width,outputCanvas.height);
+      const w = sourceBitmap.width;
+      const h = sourceBitmap.height;
+      outputCanvas.width = w;
+      outputCanvas.height = h;
+      ctx.clearRect(0,0,w,h);
       ctx.drawImage(sourceBitmap,0,0);
 
-      const image = ctx.getImageData(0,0,outputCanvas.width,outputCanvas.height);
+      const image = ctx.getImageData(0,0,w,h);
       const d = image.data;
       const bg = hexToRgb(bgColor.value);
       const t = Number(threshold.value);
       const f = Number(feather.value);
-      const low = Math.max(0,t-f);
-      const high = Math.max(low+1,t+f);
+      const floodLimit = t + f;
+      const count = w*h;
 
-      for(let i=0;i<d.length;i+=4){
-        const r=d[i], g=d[i+1], b=d[i+2], originalAlpha=d[i+3]/255;
+      // 0 = belum diperiksa, 1 = diperiksa tapi bukan bg, 2 = bg terhubung ke border
+      const state = new Uint8Array(count);
+      const queue = new Int32Array(count);
+      let head = 0;
+      let tail = 0;
+
+      function colorDistance(pixelIndex){
+        const i = pixelIndex*4;
+        const dr = d[i]-bg.r;
+        const dg = d[i+1]-bg.g;
+        const db = d[i+2]-bg.b;
+        return Math.sqrt(dr*dr+dg*dg+db*db);
+      }
+
+      function trySeed(pixelIndex){
+        if(state[pixelIndex] !== 0) return;
+        state[pixelIndex] = 1;
+        const a = d[pixelIndex*4+3];
+        if(a === 0 || colorDistance(pixelIndex) <= floodLimit){
+          state[pixelIndex] = 2;
+          queue[tail++] = pixelIndex;
+        }
+      }
+
+      // Mulai hanya dari seluruh tepi gambar.
+      for(let x=0;x<w;x++){
+        trySeed(x);
+        if(h>1) trySeed((h-1)*w+x);
+      }
+      for(let y=1;y<h-1;y++){
+        trySeed(y*w);
+        if(w>1) trySeed(y*w+w-1);
+      }
+
+      // Flood-fill 4 arah. Tidak bisa melompati outline/warna objek yang berbeda.
+      while(head < tail){
+        const p = queue[head++];
+        const x = p % w;
+        const y = (p / w) | 0;
+
+        if(x>0) trySeed(p-1);
+        if(x<w-1) trySeed(p+1);
+        if(y>0) trySeed(p-w);
+        if(y<h-1) trySeed(p+w);
+      }
+
+      let removed = 0;
+      let softened = 0;
+
+      for(let p=0;p<count;p++){
+        if(state[p] !== 2) continue;
+        const i = p*4;
+        const originalAlpha = d[i+3]/255;
         if(originalAlpha === 0) continue;
-        const dr=r-bg.r, dg=g-bg.g, db=b-bg.b;
-        const dist=Math.sqrt(dr*dr+dg*dg+db*db);
-        let alpha=clamp((dist-low)/(high-low),0,1) * originalAlpha;
 
-        if(alpha < .01){
-          d[i+3]=0;
+        const dist = colorDistance(p);
+        let maskAlpha;
+
+        if(f <= 0 || dist <= t){
+          maskAlpha = 0;
+        }else{
+          maskAlpha = clamp((dist-t)/f,0,1);
+        }
+
+        const finalAlpha = maskAlpha * originalAlpha;
+
+        if(finalAlpha <= .01){
+          d[i+3] = 0;
+          removed++;
           continue;
         }
 
-        if(alpha < .995){
-          const inv = 1-alpha;
-          d[i]   = clamp((r - bg.r*inv)/alpha,0,255);
-          d[i+1] = clamp((g - bg.g*inv)/alpha,0,255);
-          d[i+2] = clamp((b - bg.b*inv)/alpha,0,255);
+        if(finalAlpha < .995){
+          // Kurangi kontaminasi warna background pada anti-alias edge.
+          const inv = 1-finalAlpha;
+          d[i]   = clamp((d[i]   - bg.r*inv)/finalAlpha,0,255);
+          d[i+1] = clamp((d[i+1] - bg.g*inv)/finalAlpha,0,255);
+          d[i+2] = clamp((d[i+2] - bg.b*inv)/finalAlpha,0,255);
+          d[i+3] = Math.round(finalAlpha*255);
+          softened++;
         }
-        d[i+3]=Math.round(alpha*255);
       }
 
       ctx.putImageData(image,0,0);
       processed = true;
       downloadBtn.disabled = false;
-      setStatus('Background selesai dihapus.');
+      const percent = ((removed/count)*100).toFixed(1);
+      setStatus(`Smart Border selesai · ${percent}% background dibuang · interior dipertahankan.`);
       setTab('processed');
+    }
+
+    function scheduleReprocess(){
+      if(!sourceBitmap || !processed) return;
+      clearTimeout(reprocessTimer);
+      reprocessTimer = setTimeout(removeBackground,120);
     }
 
     function resetSettings(){
@@ -397,13 +482,13 @@
       const detected=detectBackgroundColor(sourceBitmap);
       bgColor.value=rgbToHex(detected.r,detected.g,detected.b);
       bgLabel.textContent=`Auto · ${bgColor.value.toUpperCase()}`;
-      threshold.value=52;
-      feather.value=14;
-      thresholdValue.textContent='52';
-      featherValue.textContent='14';
+      threshold.value=42;
+      feather.value=12;
+      thresholdValue.textContent='42';
+      featherValue.textContent='12';
       processed=false;
       downloadBtn.disabled=true;
-      setStatus('Setting direset. Klik Remove Background.');
+      setStatus('Setting direset. Klik Smart Remove Background.');
       setTab('original');
     }
 
@@ -431,6 +516,7 @@
     }
 
     function clearAll(){
+      clearTimeout(reprocessTimer);
       if(sourceBitmap && sourceBitmap.close) sourceBitmap.close();
       if(sourceObjectUrl) URL.revokeObjectURL(sourceObjectUrl);
       sourceBitmap=null;
@@ -450,6 +536,10 @@
       downloadBtn.disabled=true;
       bgColor.value='#ffffff';
       bgLabel.textContent='Auto dari 4 sudut gambar';
+      threshold.value=42;
+      feather.value=12;
+      thresholdValue.textContent='42';
+      featherValue.textContent='12';
       setStatus('Ready');
       setTab('processed');
     }
@@ -459,9 +549,9 @@
     ['dragleave','drop'].forEach(type=>dropzone.addEventListener(type,e=>{e.preventDefault();dropzone.classList.remove('drag')}));
     dropzone.addEventListener('drop',e=>loadFile(e.dataTransfer?.files?.[0]));
 
-    threshold.addEventListener('input',()=>{thresholdValue.textContent=threshold.value;if(sourceBitmap && processed) removeBackground()});
-    feather.addEventListener('input',()=>{featherValue.textContent=feather.value;if(sourceBitmap && processed) removeBackground()});
-    bgColor.addEventListener('input',()=>{bgLabel.textContent=`Manual · ${bgColor.value.toUpperCase()}`;if(sourceBitmap && processed) removeBackground()});
+    threshold.addEventListener('input',()=>{thresholdValue.textContent=threshold.value;scheduleReprocess()});
+    feather.addEventListener('input',()=>{featherValue.textContent=feather.value;scheduleReprocess()});
+    bgColor.addEventListener('input',()=>{bgLabel.textContent=`Manual · ${bgColor.value.toUpperCase()}`;scheduleReprocess()});
 
     removeBtn.addEventListener('click',removeBackground);
     resetBtn.addEventListener('click',resetSettings);
