@@ -52,13 +52,14 @@ jobs:
           fetch_asset "https://at.adobe.com/ZrUJg0xRr4rfjsLt" "cloud-01.png"
           fetch_asset "https://at.adobe.com/ANmK9B6UYKpXc4CJ" "cloud-02.png"
 
-          fetch_asset "https://at.adobe.com/thck3O41j59sSbCP" "sakura-top-left.png"
-          fetch_asset "https://at.adobe.com/KptmDxaNGX2dXTiN" "sakura-top-right.png"
-          fetch_asset "https://at.adobe.com/cUpUpeZedlABpf5H" "sakura-side-right.png"
+          # Refreshed Creative Cloud rendition links for floral assets.
+          fetch_asset "https://at.adobe.com/UFKIokf3PF4kL8AV" "sakura-top-left.png"
+          fetch_asset "https://at.adobe.com/hvmMRhFwc09o99EH" "sakura-top-right.png"
+          fetch_asset "https://at.adobe.com/DR6njhOVKpNCe9oV" "sakura-side-right.png"
 
-          fetch_asset "https://at.adobe.com/3Uh45cSUSyxQzXpH" "peony-left.png"
-          fetch_asset "https://at.adobe.com/SNDRUuzTGtdtSbjs" "peony-center.png"
-          fetch_asset "https://at.adobe.com/7qECzt0ien2m3F4i" "peony-right.png"
+          fetch_asset "https://at.adobe.com/uOwEbkQoYgKihhvF" "peony-left.png"
+          fetch_asset "https://at.adobe.com/cgPV90Z6X4dASK2K" "peony-center.png"
+          fetch_asset "https://at.adobe.com/xEomsgxcej5R90nK" "peony-right.png"
 
           # Extra transparent reference pool — Wikimedia Commons, CC0.
           fetch_asset "https://upload.wikimedia.org/wikipedia/commons/8/87/Sakura.svg" "sakura-cc0.svg"
