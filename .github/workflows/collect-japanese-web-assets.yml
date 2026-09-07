@@ -50,30 +50,28 @@ jobs:
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Japanese_geometric_wave_pattern.svg" "japanese-wave-pattern.svg"
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_Japanese_wave_illustration.svg" "japanese-wave-illustration.svg"
 
-          # LIFE MOTION CANDIDATES — CC0 / public-domain friendly
-          # Petals / blossom details
-          fetch "https://www.svgrepo.com/download/481054/cherry-blossom-petal.svg" "life-cherry-blossom-petal-cc0.svg"
-          fetch "https://www.svgrepo.com/download/14462/cherry-blossom.svg" "life-cherry-blossom-cc0.svg"
-          fetch "https://www.svgrepo.com/download/134885/flower-on-a-branch.svg" "life-flower-on-branch-cc0.svg"
+          # LIFE MOTION CANDIDATES — Wikimedia-only so the collection is stable.
+          # Petals for sparse falling motion
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Petal.svg" "life-petal.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Simple_petal.svg" "life-simple-petal.svg"
 
-          # Distant birds / crane silhouettes for slow background flight
-          fetch "https://www.svgrepo.com/download/191442/crane-bird.svg" "life-crane-bird-cc0.svg"
-          fetch "https://www.svgrepo.com/download/40552/bird-in-flight-origami.svg" "life-bird-in-flight-origami-cc0.svg"
-          fetch "https://www.svgrepo.com/download/25528/bird-silhouette.svg" "life-bird-silhouette-cc0.svg"
-          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_flying_Pinhead_icon.svg" "life-bird-flying-pinhead-cc0.svg"
+          # Distant birds / cranes for slow background flight
           fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Crane_illustration.svg" "life-crane-illustration-cc0.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_flying_Pinhead_icon.svg" "life-bird-flying-pinhead-cc0.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird_template.svg" "life-bird-template-public-domain.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/FlightSilhouettes.svg" "life-flight-silhouettes.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Bird01.svg" "life-bird01.svg"
 
-          # Mist / cloud shapes: use as masks or decorative references, not literal weather icons
-          fetch "https://www.svgrepo.com/download/455033/misty-cloud.svg" "life-misty-cloud-cc0.svg"
-          fetch "https://www.svgrepo.com/download/26906/mist-and-cloud.svg" "life-mist-and-cloud-cc0.svg"
-          fetch "https://www.svgrepo.com/download/107707/mist.svg" "life-mist-cc0.svg"
+          # Atmosphere / optional accents
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Weather_icon_-_fog.svg" "life-fog-cc0.svg"
+          fetch "https://commons.wikimedia.org/wiki/Special:Redirect/file/Moon_crescent_symbol_(tips_upward).svg" "life-moon-crescent-cc0.svg"
 
           cat > "$OUT/README-LICENSES.md" <<'EOF'
           # Japanese Web Reference Assets
 
           Collected as motion/reference candidates for the Japanese scene. Keep this file with the assets so attribution requirements are not lost.
 
-          ## Existing Wikimedia references
+          ## Existing references
           - sakura-branch.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
             https://commons.wikimedia.org/wiki/File:Simple_sakura_cherry_blossom_branch.svg
           - sakura-branch-monochrome.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
@@ -93,51 +91,45 @@ jobs:
           - japanese-wave-illustration.svg — Wikimedia Commons, Bajinra, CC BY-SA 4.0
             https://commons.wikimedia.org/wiki/File:Simple_Japanese_wave_illustration.svg
 
-          ## Life-motion candidates — CC0
-          SVG Repo pages below explicitly list CC0 on each asset page.
-          - life-cherry-blossom-petal-cc0.svg
-            https://www.svgrepo.com/svg/481054/cherry-blossom-petal
-            Suggested use: 4–8 tiny petals, slow fall, low opacity.
-          - life-cherry-blossom-cc0.svg
-            https://www.svgrepo.com/svg/14462/cherry-blossom
-            Suggested use: small blossom accents, not whole-flower flying.
-          - life-flower-on-branch-cc0.svg
-            https://www.svgrepo.com/svg/134885/flower-on-a-branch
-            Suggested use: foreground parallax / very slow branch sway.
-          - life-crane-bird-cc0.svg
-            https://www.svgrepo.com/svg/191442/crane-bird
-            Suggested use: one distant crane crossing slowly behind Fuji.
-          - life-bird-in-flight-origami-cc0.svg
-            https://www.svgrepo.com/svg/40552/bird-in-flight-origami
-            Suggested use: optional stylized distant flight.
-          - life-bird-silhouette-cc0.svg
-            https://www.svgrepo.com/svg/25528/bird-silhouette
-            Suggested use: 2–3 tiny silhouettes in the far sky.
-          - life-misty-cloud-cc0.svg
-            https://www.svgrepo.com/svg/455033/misty-cloud
-            Suggested use: mask/reference for soft drifting mist.
-          - life-mist-and-cloud-cc0.svg
-            https://www.svgrepo.com/svg/26906/mist-and-cloud
-            Suggested use: mask/reference for lower-depth haze.
-          - life-mist-cc0.svg
-            https://www.svgrepo.com/svg/107707/mist
-            Suggested use: mask/reference only; actual mist is better rendered as translucent gradients.
-
-          ## Wikimedia CC0 life-motion references
+          ## Life-motion candidates
+          - life-petal.svg — Nevit Dilmen, CC BY-SA 3.0 / GFDL
+            https://commons.wikimedia.org/wiki/File:Petal.svg
+            Suggested use: 4–8 small falling petals only.
+          - life-simple-petal.svg — TheTraveller60, CC BY-SA 4.0
+            https://commons.wikimedia.org/wiki/File:Simple_petal.svg
+            Suggested use: alternate petal silhouette / depth variation.
+          - life-crane-illustration-cc0.svg — Francis Akuka / Wikimedia Foundation, CC0 1.0
+            https://commons.wikimedia.org/wiki/File:Crane_illustration.svg
+            Suggested use: one very distant crane crossing slowly behind Fuji.
           - life-bird-flying-pinhead-cc0.svg — Wikimedia Commons, CC0 1.0
             https://commons.wikimedia.org/wiki/File:Bird_flying_Pinhead_icon.svg
-          - life-crane-illustration-cc0.svg — Wikimedia Commons, Francis Akuka / Wikimedia Foundation, CC0 1.0
-            https://commons.wikimedia.org/wiki/File:Crane_illustration.svg
+            Suggested use: tiny far-sky bird.
+          - life-bird-template-public-domain.svg — public domain
+            https://commons.wikimedia.org/wiki/File:Bird_template.svg
+            Suggested use: recolorable distant silhouette.
+          - life-flight-silhouettes.svg — L. Shyamal, CC BY-SA 2.5
+            https://commons.wikimedia.org/wiki/File:FlightSilhouettes.svg
+            Suggested use: reference pack for 2–3 distant birds.
+          - life-bird01.svg — Lionel Allorge, CC BY-SA 3.0 / GFDL
+            https://commons.wikimedia.org/wiki/File:Bird01.svg
+            Suggested use: one tiny silhouette only.
+          - life-fog-cc0.svg — Open Clip Art / gnokii, CC0 / public domain
+            https://commons.wikimedia.org/wiki/File:Weather_icon_-_fog.svg
+            Suggested use: mask/reference; actual fog should be rendered as translucent gradient layers.
+          - life-moon-crescent-cc0.svg — Karl432, CC0 1.0
+            https://commons.wikimedia.org/wiki/File:Moon_crescent_symbol_(tips_upward).svg
+            Suggested use: optional night variant only.
 
           ## Motion guidance
           To keep the scene alive but premium:
           1. Background/Fuji/Pagoda remain nearly static.
           2. Clouds drift 6–18 px over several seconds.
           3. Sakura branches sway from the branch base only.
-          4. Use one foreground branch for slow parallax, never a full flower flying across frame.
-          5. Use 4–8 tiny petals total, with staggered starts and low opacity.
+          4. One foreground branch can move slightly faster for parallax, but never fly across the frame.
+          5. Use 4–8 tiny petals total, staggered and low opacity.
           6. Add one crane or 2–3 tiny distant birds at most.
-          7. Add translucent mist as gradient layers using SVG mist shapes only as masks/references.
+          7. Add translucent mist as gradient layers; SVG fog is only a reference/mask.
+          8. Keep motion asymmetrical so the scene feels organic rather than looped.
           EOF
 
       - name: Upload reference asset bundle
