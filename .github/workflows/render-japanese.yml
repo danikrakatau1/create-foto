@@ -34,9 +34,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p remotion-japanese/public/assets/drive-reference
-          gdown "https://drive.google.com/drive/folders/1YDu3oDR-73a5AKLnr-i70kUAcTRJkb0k" --folder -O remotion-japanese/public/assets/drive-reference/life-motion
-          gdown "https://drive.google.com/drive/folders/1vjxem1bH0L0QH4dLlR9NbYVQNBqPlbKM" --folder -O remotion-japanese/public/assets/drive-reference/web-reference
+          ASSET_ROOT="remotion-japanese/public/assets"
+          REF_ROOT="$ASSET_ROOT/drive-reference"
+          mkdir -p "$REF_ROOT"
+          gdown "https://drive.google.com/drive/folders/1YDu3oDR-73a5AKLnr-i70kUAcTRJkb0k" --folder -O "$REF_ROOT/life-motion"
+          gdown "https://drive.google.com/drive/folders/1vjxem1bH0L0QH4dLlR9NbYVQNBqPlbKM" --folder -O "$REF_ROOT/web-reference"
+
+          # The scene references these through staticFile('assets/...'), so stage only
+          # the approved V2 life-motion files at the Remotion asset root.
+          cp "$REF_ROOT/life-motion/life-fog-cc0.svg" "$ASSET_ROOT/life-fog-cc0.svg"
+          cp "$REF_ROOT/life-motion/life-crane-illustration-cc0.svg" "$ASSET_ROOT/life-crane-illustration-cc0.svg"
+          cp "$REF_ROOT/life-motion/life-simple-petal.svg" "$ASSET_ROOT/life-simple-petal.svg"
+          test -s "$ASSET_ROOT/life-fog-cc0.svg"
+          test -s "$ASSET_ROOT/life-crane-illustration-cc0.svg"
+          test -s "$ASSET_ROOT/life-simple-petal.svg"
 
       - name: Download locked artwork assets
         shell: bash
