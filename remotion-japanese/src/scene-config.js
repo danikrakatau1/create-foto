@@ -1,27 +1,30 @@
-// FUJI V2 — composition rebuild
-// V1.3 remains untouched on main. This branch deliberately rebalances the scene
-// around Fuji and Japanese negative-space composition instead of patching V1.3.
+// FUJI V2.1 — rebuilt against the supplied reference video + source ZIP.
+// Principle: complete Japanese tableau first; web research is only gap-filling.
+// Fuji/pagoda/clouds establish together, foliage frames the scene, flowers stay at edges.
 export const sceneConfig = {
   durationSeconds: 10,
-  motionLock: {
-    cameraPush: 0.004,
-    cameraX: 0,
-    cameraY: -3,
-    petalCount: 0,
-  },
+  motionLock: {cameraPush: 0.003, cameraX: 0, cameraY: -2, petalCount: 0},
   layers: [
-    {id: 'background', file: 'background-main.jpg', x: 540, y: 960, width: 1080, start: 0.0, z: 1, kind: 'background'},
-    {id: 'fuji', file: 'fuji-main.png', x: 570, y: 1110, width: 1080, start: 0.20, z: 2, enterY: 24, motion: 'fuji-still'},
-    {id: 'cloud1', file: 'cloud-01.png', x: 255, y: 1035, width: 560, start: 0.72, z: 4, enterX: -18, motion: 'cloud-right-soft'},
-    {id: 'cloud2', file: 'cloud-02.png', x: 865, y: 1160, width: 500, start: 0.92, z: 4, enterX: 18, motion: 'cloud-left-soft'},
-    {id: 'pagoda', file: 'pagoda-main.png', x: 205, y: 1390, width: 310, start: 1.35, z: 5, enterX: -18, enterY: 18, motion: 'structure-still'},
-    {id: 'pineLeft', file: 'pine-left.png', x: 70, y: 1575, width: 345, start: 1.75, z: 6, enterX: -24, motion: 'micro-sway-left', origin: '20% 96%'},
-    {id: 'pineRight', file: 'pine-right.png', x: 1025, y: 1640, width: 300, start: 2.00, z: 6, enterX: 24, motion: 'micro-sway-right', origin: '80% 96%'},
-    {id: 'sakuraTopLeft', file: 'sakura-top-left.png', x: 120, y: 225, width: 470, start: 2.35, z: 8, enterX: -18, enterY: -12, motion: 'sakura-left-soft', origin: '0% 0%', rotation: -3},
-    {id: 'sakuraTopRight', file: 'sakura-top-right.png', x: 1015, y: 320, width: 390, start: 2.65, z: 8, enterX: 18, enterY: -12, motion: 'sakura-right-soft', origin: '100% 0%', rotation: 2},
-    {id: 'sakuraSideRight', file: 'sakura-side-right.png', x: 1070, y: 745, width: 215, start: 2.95, z: 8, enterX: 18, motion: 'side-sway-soft', origin: '100% 100%'},
-    {id: 'peonyLeft', file: 'peony-left.png', x: 70, y: 1870, width: 330, start: 3.20, z: 10, enterY: 24, motion: 'flower-anchor-a'},
-    {id: 'peonyCenter', file: 'peony-center.png', x: 455, y: 1990, width: 235, start: 3.42, z: 9, enterY: 22, motion: 'flower-anchor-b'},
-    {id: 'peonyRight', file: 'peony-right.png', x: 1040, y: 1900, width: 315, start: 3.62, z: 10, enterY: 24, motion: 'flower-anchor-c'}
+    {id:'background',file:'background-main.jpg',x:540,y:960,width:1080,start:0,z:1,kind:'background'},
+
+    // Landscape core: visible immediately as one coherent Japanese illustration.
+    {id:'fuji',file:'fuji-main.png',x:548,y:1025,width:930,start:.05,z:2,enterY:10,motion:'fuji-still'},
+    {id:'cloud1',file:'cloud-01.png',x:245,y:1125,width:620,start:.12,z:3,enterX:-8,motion:'cloud-right-soft'},
+    {id:'cloud2',file:'cloud-02.png',x:850,y:1190,width:590,start:.18,z:3,enterX:8,motion:'cloud-left-soft'},
+    {id:'pagoda',file:'pagoda-main.png',x:260,y:1395,width:360,start:.35,z:5,enterX:-10,enterY:10,motion:'structure-still'},
+
+    // Asymmetric natural frame, matching the reference instead of a symmetrical gate.
+    {id:'pineLeft',file:'pine-left.png',x:40,y:1550,width:405,start:.62,z:6,enterX:-14,motion:'micro-sway-left',origin:'18% 94%'},
+    {id:'pineRight',file:'pine-right.png',x:1065,y:1600,width:330,start:.78,z:6,enterX:14,motion:'micro-sway-right',origin:'82% 94%'},
+
+    // Sakura enters as foreground framing; no extra web SVGs unless a real gap remains.
+    {id:'sakuraTopLeft',file:'sakura-top-left.png',x:95,y:225,width:525,start:1.00,z:8,enterX:-14,enterY:-10,motion:'sakura-left-soft',origin:'0% 0%',rotation:-2},
+    {id:'sakuraTopRight',file:'sakura-top-right.png',x:1015,y:275,width:455,start:1.16,z:8,enterX:14,enterY:-10,motion:'sakura-right-soft',origin:'100% 0%',rotation:1},
+    {id:'sakuraSideRight',file:'sakura-side-right.png',x:1060,y:730,width:245,start:1.34,z:8,enterX:12,motion:'side-sway-soft',origin:'100% 100%'},
+
+    // Bottom florals are cropped edge accents like the reference, never a central altar.
+    {id:'peonyLeft',file:'peony-left.png',x:-5,y:1880,width:360,start:1.72,z:10,enterY:14,motion:'flower-anchor-a'},
+    {id:'peonyCenter',file:'peony-center.png',x:365,y:2010,width:215,start:1.88,z:9,enterY:12,motion:'flower-anchor-b'},
+    {id:'peonyRight',file:'peony-right.png',x:1080,y:1900,width:345,start:2.02,z:10,enterY:14,motion:'flower-anchor-c'}
   ]
 };
