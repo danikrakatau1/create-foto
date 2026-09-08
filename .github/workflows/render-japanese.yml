@@ -1,12 +1,13 @@
 name: Render Japanese Scene MP4
 
-# Auto-render enabled for changes inside remotion-japanese/**.
 on:
   push:
     branches:
       - main
+      - fuji-v3-reference-first
     paths:
       - "remotion-japanese/**"
+      - ".github/workflows/render-japanese.yml"
 
   workflow_dispatch:
 
@@ -37,32 +38,26 @@ jobs:
             local url="$1"
             local target="$2"
             echo "Downloading ${target}"
-            curl --fail --location --retry 3 --retry-delay 2 "$url" --output "remotion-japanese/public/assets/${target}"
+            curl --fail --location --retry 4 --retry-delay 3 "$url" --output "remotion-japanese/public/assets/${target}"
             test -s "remotion-japanese/public/assets/${target}"
           }
 
-          # Main locked artwork stack — refreshed Creative Cloud rendition links.
           fetch_asset "https://at.adobe.com/iVDaBEqyVgO83Bel" "background-main.jpg"
           fetch_asset "https://at.adobe.com/EK2wvO3PImPfqvSa" "fuji-main.png"
           fetch_asset "https://at.adobe.com/jG1LieHZ0AHwgIvz" "pagoda-main.png"
-
           fetch_asset "https://at.adobe.com/9hFLr0AqSUkt1BNq" "pine-left.png"
           fetch_asset "https://at.adobe.com/lyEMWZQPtevIOyoN" "pine-right.png"
-
           fetch_asset "https://at.adobe.com/wMOzScAp3vfby82C" "cloud-01.png"
           fetch_asset "https://at.adobe.com/jmjJ0pew3BPyNlwZ" "cloud-02.png"
-
           fetch_asset "https://at.adobe.com/t99rVOr4K10kXVqu" "sakura-top-left.png"
           fetch_asset "https://at.adobe.com/7dMEw0HzgVyZJaSs" "sakura-top-right.png"
           fetch_asset "https://at.adobe.com/iiZ2ixDACDdO1vLd" "sakura-side-right.png"
-
           fetch_asset "https://at.adobe.com/Z5Stc1JviQwoXVch" "peony-left.png"
           fetch_asset "https://at.adobe.com/LHUlR8zcAWK1vbkG" "peony-center.png"
           fetch_asset "https://at.adobe.com/lRtiJlFw6xIm2XIa" "peony-right.png"
 
-          # Extra transparent reference pool — Wikimedia Commons, CC0.
+          # tiny foreground petal only; no external fog/crane layers
           fetch_asset "https://upload.wikimedia.org/wikipedia/commons/8/87/Sakura.svg" "sakura-cc0.svg"
-          fetch_asset "https://upload.wikimedia.org/wikipedia/commons/1/11/Cherry_blossom.svg" "cherry-blossom-cc0.svg"
 
       - name: Install Remotion dependencies
         working-directory: remotion-japanese
@@ -75,7 +70,7 @@ jobs:
       - name: Upload rendered MP4
         uses: actions/upload-artifact@v4
         with:
-          name: japanese-scene-mp4
+          name: japanese-scene-mp4-${{ github.ref_name }}
           path: remotion-japanese/out/japanese-scene.mp4
           if-no-files-found: error
           retention-days: 7
