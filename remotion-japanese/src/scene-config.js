@@ -1,34 +1,39 @@
-// JAPANESE SCENE — MOTION LOCK V1.2
-// Auto-render trigger: retry with refreshed pagoda + floral asset sources.
-// Fix: no full blossom/branch assets may fly across frame.
-// Motion stays in soft clouds, microscopic branch sway, subtle camera push, and a sparse petal field.
+// FUJI V3 — REFERENCE FIRST
+// Goal: match the supplied reference structure before adding decoration.
+// Source order: supplied artwork first; web assets only if a real visual gap remains.
 export const sceneConfig = {
-  durationSeconds: 10,
+  durationSeconds: 6,
   motionLock: {
-    cameraPush: 0.006,
-    cameraX: -1,
-    cameraY: -2,
-    petalCount: 6,
+    cameraPush: 0.012,
+    cameraX: 0,
+    cameraY: 0,
+    petalCount: 4,
   },
   layers: [
-    {id: 'background', file: 'background-main.jpg', x: 540, y: 960, width: 1080, start: 0.0, z: 1, kind: 'background'},
+    // quiet ivory-paper background
+    {id:'background',file:'background-main.jpg',x:540,y:960,width:1080,start:0,z:1,kind:'background'},
 
-    {id: 'fuji', file: 'fuji-main.png', x: 555, y: 1290, width: 970, start: 0.20, z: 2, enterY: 10, motion: 'fuji-still'},
+    // one compact landscape cluster — Fuji stays central and dominant
+    {id:'fuji',file:'fuji-main.png',x:555,y:1125,width:940,start:0.12,z:2,enterY:20,motion:'fuji-still'},
 
-    {id: 'cloud1', file: 'cloud-01.png', x: 230, y: 870, width: 510, start: 0.65, z: 4, enterX: -12, motion: 'cloud-right-soft'},
-    {id: 'cloud2', file: 'cloud-02.png', x: 865, y: 1020, width: 450, start: 0.90, z: 4, enterX: 12, motion: 'cloud-left-soft'},
+    // mist/clouds hug the mountain base rather than floating independently
+    {id:'cloud1',file:'cloud-01.png',x:285,y:1110,width:590,start:0.45,z:3,enterX:-16,motion:'cloud-right-soft'},
+    {id:'cloud2',file:'cloud-02.png',x:825,y:1170,width:530,start:0.62,z:3,enterX:16,motion:'cloud-left-soft'},
 
-    {id: 'pagoda', file: 'pagoda-main.png', x: 225, y: 1435, width: 390, start: 0.45, z: 5, enterX: -10, enterY: 12, motion: 'structure-still'},
+    // pagoda is secondary and partially nestled into the lower landscape
+    {id:'pagoda',file:'pagoda-main.png',x:220,y:1425,width:295,start:0.82,z:4,enterY:20,motion:'structure-still'},
 
-    {id: 'pineLeft', file: 'pine-left.png', x: 105, y: 1530, width: 390, start: 1.10, z: 6, enterX: -16, motion: 'micro-sway-left', origin: '24% 94%'},
-    {id: 'pineRight', file: 'pine-right.png', x: 980, y: 1540, width: 360, start: 1.25, z: 6, enterX: 16, motion: 'micro-sway-right', origin: '76% 94%'},
+    // foreground framing — asymmetrical, never a symmetrical gate
+    {id:'pineLeft',file:'pine-left.png',x:65,y:1590,width:360,start:1.08,z:5,enterX:-28,motion:'micro-sway-left',origin:'20% 96%'},
+    {id:'pineRight',file:'pine-right.png',x:1050,y:1640,width:310,start:1.26,z:5,enterX:28,motion:'micro-sway-right',origin:'80% 96%'},
 
-    {id: 'sakuraTopLeft', file: 'sakura-top-left.png', x: 185, y: 285, width: 620, start: 1.40, z: 8, enterX: -10, enterY: -8, motion: 'sakura-left-soft', origin: '0% 0%', flipX: true, rotation: -2},
-    {id: 'sakuraTopRight', file: 'sakura-top-right.png', x: 930, y: 360, width: 500, start: 1.60, z: 8, enterX: 10, enterY: -8, motion: 'sakura-right-soft', origin: '100% 0%', rotation: 1},
-    {id: 'sakuraSideRight', file: 'sakura-side-right.png', x: 1030, y: 760, width: 300, start: 1.85, z: 8, enterX: 12, motion: 'side-sway-soft', origin: '100% 100%'},
+    // sakura canopy enters last and frames rather than covers the hero
+    {id:'sakuraTopLeft',file:'sakura-top-left.png',x:130,y:255,width:500,start:1.55,z:7,enterX:-36,enterY:-24,motion:'sakura-left-soft',origin:'0% 0%',rotation:-2},
+    {id:'sakuraTopRight',file:'sakura-top-right.png',x:1020,y:330,width:405,start:1.78,z:7,enterX:34,enterY:-22,motion:'sakura-right-soft',origin:'100% 0%',rotation:2},
+    {id:'sakuraSideRight',file:'sakura-side-right.png',x:1080,y:780,width:205,start:2.02,z:7,enterX:26,motion:'side-sway-soft',origin:'100% 100%'},
 
-    {id: 'peonyLeft', file: 'peony-left.png', x: 120, y: 1790, width: 430, start: 2.05, z: 10, enterY: 18, motion: 'flower-anchor-a'},
-    {id: 'peonyCenter', file: 'peony-center.png', x: 520, y: 1880, width: 390, start: 2.20, z: 10, enterY: 20, motion: 'flower-anchor-b'},
-    {id: 'peonyRight', file: 'peony-right.png', x: 970, y: 1800, width: 430, start: 2.35, z: 10, enterY: 18, motion: 'flower-anchor-c'}
+    // only edge floral anchors; no central altar arrangement
+    {id:'peonyLeft',file:'peony-left.png',x:55,y:1885,width:300,start:2.28,z:9,enterY:28,motion:'flower-anchor-a'},
+    {id:'peonyRight',file:'peony-right.png',x:1045,y:1900,width:285,start:2.46,z:9,enterY:28,motion:'flower-anchor-c'}
   ]
 };
